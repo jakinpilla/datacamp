@@ -39,4 +39,12 @@ DT[, lapply(.SD, cumsum),
 
 # Add/update columnes in j using := ----
 
+data.table(x = c(1, 1, 1, 2, 2),
+           y = c(6, 7, 8, 9, 10)) -> DT
+DT
+DT[, c("x", "z") := .(rev(x), 10:6)]
+DT[, c("a") := .(10:6)]
 
+## remove columns using :=
+DT[, c("y", "z") := NULL]
+DT
