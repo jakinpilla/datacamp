@@ -36,3 +36,7 @@ DT[ , c(lapply(.SD, sum), .N), by = x, .SDcols = c("x", "y", "z")]
 
 DT[, lapply(.SD, cumsum), 
    by = .(by1 = x, by2 = z > 8), .SDcols = c("x", "y")]
+
+# Add/update columnes in j using := ----
+
+
