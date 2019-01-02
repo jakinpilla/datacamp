@@ -1,3 +1,8 @@
+#' ---
+#' title: "Write func in R"
+#' output: rmarkdown::github_document
+#' ---
+  
 f <- function(x) {
   y <- 5
   x + y
