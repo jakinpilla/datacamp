@@ -5,13 +5,10 @@ f <- function(x) {
 
 f(5)
 
-
-
-
-
-install.packages("purrrlyr")
-install.packages('yaml')
+# install.packages("purrrlyr")
+# install.packages('yaml')
 library(purrrlyr)
+library(tidyverse)
 
 data("mtcars")
 head(mtcars)
@@ -27,8 +24,8 @@ mtcars %>%
            }) -> tmp
  tmp$.out
  
-install.packages("installr")
-installr::updateR()
+# install.packages("installr")
+# installr::updateR()
 R.home()
 Sys.getenv("Home")
 Sys.getenv("R_LIBS_USER")
@@ -46,7 +43,6 @@ show_missings <- function(x) {
 
 show_missings(x)
 
-?seq_along
 seq_along(c(1, NA, NA))
 
 plot_missing <- function(x) {
@@ -163,7 +159,7 @@ f_eval(~ f(y), data = list(f=function(x) x*3))
 
 f_eval(~mean(cyl), data = mtcars)
 
-f_eval(~x, data= mydata)
+# f_eval(~x, data= mydata)
 
 mydata <- data.frame(x=100, y=1)
 x <- 10
@@ -171,8 +167,8 @@ x <- 10
 f_eval(~.env$x, data = mydata)
 f_eval(~.data$x, data = mydata)
 
-f_eval(~.env$z, data= mydata)
-f_eval(~.data$z, data= mydata)
+# f_eval(~.env$z, data= mydata)
+# f_eval(~.data$z, data= mydata)
 
 df_mean <- function(df, variable) {
   f_eval(~mean(uq(variable)), data=df)

@@ -60,21 +60,21 @@ interpret_all(linkedin)
 interpret_all(facebook)
 
 search()
-install.packages("ggvis")
+# install.packages("ggvis")
 library(ggvis)
 
-install.packages("rjson")
+# install.packages("rjson")
 
 library(data.table)
-require(rjson)
+# require(rjson)
 
 library("data.table")
-require(rjson)
+# require(rjson)
 
 library(data.table)
-require(rjson, character.only = T)
+# require(rjson, character.only = T)
 
-library(c("data.table", "rjson"))
+# library(c("data.table", "rjson"))
 
 
 ## apply----
