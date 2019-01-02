@@ -1,11 +1,12 @@
 data table
 ================
 Daniel
-Wed Jan 02 21:45:31 2019
+Wed Jan 02 22:29:50 2019
 
 ``` r
 ## .SD----
 library(data.table)
+data("iris")
 DT <- as.data.table(iris) 
 DT[, .(Sepal.Length = median(Sepal.Length),
        Sepal.Width = median(Sepal.Width),
@@ -889,3 +890,168 @@ DT[.("b", 4), roll = "nearest"]
 
     ##    A B C
     ## 1: b 4 5
+
+``` r
+DT[.("b", 4), roll = +Inf]
+```
+
+    ##    A B C
+    ## 1: b 4 2
+
+``` r
+DT[.("b", 4), roll = -Inf]
+```
+
+    ##    A B C
+    ## 1: b 4 5
+
+``` r
+DT[.("b", 4), roll = 2]
+```
+
+    ##    A B  C
+    ## 1: b 4 NA
+
+``` r
+DT[.("b", 4), roll = -2]
+```
+
+    ##    A B C
+    ## 1: b 4 5
+
+``` r
+# Control ends
+setkey(DT, A, B)
+DT
+```
+
+    ##    A B C
+    ## 1: a 2 6
+    ## 2: a 6 3
+    ## 3: b 1 2
+    ## 4: b 5 5
+    ## 5: c 3 4
+    ## 6: c 4 1
+
+``` r
+DT[.("b", 7:8), roll = T]
+```
+
+    ##    A B C
+    ## 1: b 7 5
+    ## 2: b 8 5
+
+``` r
+DT[.("b", 7:8), roll = T, rollends= F]
+```
+
+    ##    A B  C
+    ## 1: b 7 NA
+    ## 2: b 8 NA
+
+``` r
+DT <- data.table(A = letters[c(2, 1, 2, 3, 1, 2, 3)],
+                 B = c(5, 4, 1, 9, 8, 8, 6),
+                 C = 6:12,
+                 key = "A,B")
+DT
+```
+
+    ##    A B  C
+    ## 1: a 4  7
+    ## 2: a 8 10
+    ## 3: b 1  8
+    ## 4: b 5  6
+    ## 5: b 8 11
+    ## 6: c 6 12
+    ## 7: c 9  9
+
+``` r
+key(DT)
+```
+
+    ## [1] "A" "B"
+
+``` r
+# Row where A == "b" and B == 6
+DT[.("b", 6)]
+```
+
+    ##    A B  C
+    ## 1: b 6 NA
+
+``` r
+# return the prevailing row
+DT[.("b", 6), roll = T]
+```
+
+    ##    A B C
+    ## 1: b 6 6
+
+``` r
+# return the nearest row
+DT[.("b", 6), roll = "nearest"]
+```
+
+    ##    A B C
+    ## 1: b 6 6
+
+``` r
+# print the sequence for the "b" group
+DT[.("b", (-2):10)]
+```
+
+    ##     A  B  C
+    ##  1: b -2 NA
+    ##  2: b -1 NA
+    ##  3: b  0 NA
+    ##  4: b  1  8
+    ##  5: b  2 NA
+    ##  6: b  3 NA
+    ##  7: b  4 NA
+    ##  8: b  5  6
+    ##  9: b  6 NA
+    ## 10: b  7 NA
+    ## 11: b  8 11
+    ## 12: b  9 NA
+    ## 13: b 10 NA
+
+``` r
+# roll the prevailing values forward to replace the NAs
+DT[.("b", (-2):10), roll = T]
+```
+
+    ##     A  B  C
+    ##  1: b -2 NA
+    ##  2: b -1 NA
+    ##  3: b  0 NA
+    ##  4: b  1  8
+    ##  5: b  2  8
+    ##  6: b  3  8
+    ##  7: b  4  8
+    ##  8: b  5  6
+    ##  9: b  6  6
+    ## 10: b  7  6
+    ## 11: b  8 11
+    ## 12: b  9 11
+    ## 13: b 10 11
+
+``` r
+# roll the first observation backwards
+DT[.("b", (-2):10), roll = T, rollends = T]
+```
+
+    ##     A  B  C
+    ##  1: b -2  8
+    ##  2: b -1  8
+    ##  3: b  0  8
+    ##  4: b  1  8
+    ##  5: b  2  8
+    ##  6: b  3  8
+    ##  7: b  4  8
+    ##  8: b  5  6
+    ##  9: b  6  6
+    ## 10: b  7  6
+    ## 11: b  8 11
+    ## 12: b  9 11
+    ## 13: b 10 11

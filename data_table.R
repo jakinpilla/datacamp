@@ -5,6 +5,7 @@
 
 ## .SD----
 library(data.table)
+data("iris")
 DT <- as.data.table(iris) 
 DT[, .(Sepal.Length = median(Sepal.Length),
        Sepal.Width = median(Sepal.Width),
@@ -234,16 +235,39 @@ setkey(DT, A, B)
 DT[.("b", 4)]
 DT[.("b", 4), roll = T]
 DT[.("b", 4), roll = "nearest"]
+DT[.("b", 4), roll = +Inf]
+DT[.("b", 4), roll = -Inf]
+DT[.("b", 4), roll = 2]
+DT[.("b", 4), roll = -2]
 
+# Control ends
+setkey(DT, A, B)
+DT
+DT[.("b", 7:8), roll = T]
+DT[.("b", 7:8), roll = T, rollends= F]
 
+DT <- data.table(A = letters[c(2, 1, 2, 3, 1, 2, 3)],
+                 B = c(5, 4, 1, 9, 8, 8, 6),
+                 C = 6:12,
+                 key = "A,B")
+DT
 
+key(DT)
 
+# Row where A == "b" and B == 6
+DT[.("b", 6)]
 
+# return the prevailing row
+DT[.("b", 6), roll = T]
 
+# return the nearest row
+DT[.("b", 6), roll = "nearest"]
 
+# print the sequence for the "b" group
+DT[.("b", (-2):10)]
 
+# roll the prevailing values forward to replace the NAs
+DT[.("b", (-2):10), roll = T]
 
-
-
-
-
+# roll the first observation backwards
+DT[.("b", (-2):10), roll = T, rollends = T]
