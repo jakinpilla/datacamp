@@ -1,7 +1,12 @@
 #' ---
 #' title: "data table"
-#' output: rmarkdown::github_document
+#' output: 
+#'     rmarkdown::github_document:
+#'         toc: true
+#'         toc_depth: 2
 #' ---
+
+#' ### About .SD of data.table 에 대해 알아보자.
 
 ## .SD----
 library(data.table)
@@ -42,6 +47,9 @@ DT[ , c(lapply(.SD, sum), .N), by = x, .SDcols = c("x", "y", "z")]
 
 DT[, lapply(.SD, cumsum), 
    by = .(by1 = x, by2 = z > 8), .SDcols = c("x", "y")]
+
+#' ### ":="  연산자에 대해 알아보자.
+#' ":=" 연산자는 data.table만의 특별한 연산자이다. 이 연산자를 통해 "j" 안에서 컬럼을 더하거나 업데이트 할 수 있다.
 
 # Add/update columnes in j using := ----
 data.table(x = c(1, 1, 1, 2, 2),

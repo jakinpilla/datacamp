@@ -1,7 +1,12 @@
 data table
 ================
 Daniel
-Wed Jan 02 22:29:50 2019
+Wed Jan 02 22:58:07 2019
+
+-   [About .SD of data.table 에 대해 알아보자.](#about-.sd-of-data.table-에-대해-알아보자.)
+-   [":=" 연산자에 대해 알아보자.](#연산자에-대해-알아보자.)
+
+### About .SD of data.table 에 대해 알아보자.
 
 ``` r
 ## .SD----
@@ -109,6 +114,10 @@ DT[, lapply(.SD, cumsum),
     ## 5:   2  TRUE 2  9
     ## 6:   2  TRUE 4 20
     ## 7:   1  TRUE 1 13
+
+### ":=" 연산자에 대해 알아보자.
+
+":=" 연산자는 data.table만의 특별한 연산자이다. 이 연산자를 통해 "j" 안에서 컬럼을 더하거나 업데이트 할 수 있다.
 
 ``` r
 # Add/update columnes in j using := ----
