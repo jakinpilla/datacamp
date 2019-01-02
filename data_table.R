@@ -1,3 +1,8 @@
+#' ---
+#' title: "data table"
+#' output: rmarkdown::github_document
+#' ---
+
 ## .SD----
 library(data.table)
 DT <- as.data.table(iris) 
