@@ -1,11 +1,18 @@
 #' ---
 #' title: "Introduction to ML learning with R(DataCamp)"
 #' author: "jakinpilla"
-#' output: rmarkdown::github_document
+#' output: 
+#'    html_document:
+#'        theme : united
+#'        toc : true
+#'        toc_float : true
+#'        df_print : paged
 #' ---
 
 Packages <- c('plyr', 'dplyr', 'tidyverse', 'data.table', 'reshape2', 'caret', 'rpart', 'GGally', 'ROCR', 'party', 'randomForest', 'dummies', 'curl', 'gridExtra', 'cluster.datasets')
 
+#' ### Regression
+#'
 #+ setup, include=FALSE
 lapply(Packages, library, character.only=T)
 
@@ -20,7 +27,6 @@ handle_setheaders(h,
 tmp <- tempfile()
 curl_download('https://archive.ics.uci.edu/ml/machine-learning-databases/00291/airfoil_self_noise.dat', tmp, handle=h)
 data <-read.table(tmp, header=F)
-head(data)
 feature_names <- c('freq', 'angle', 'ch_length',
                    'velocity', 'thickness', 'dec')
 
@@ -84,6 +90,17 @@ km_seeds <- kmeans(seeds, 3)
 plot(length ~ compactness, data = seeds, col = km_seeds$cluster)
 km_seeds$tot.withinss / km_seeds$betweenss 
 
+#' Semi-Supervised Learning
+#' 
+#' - sA lot of unlabeled obsevations
+#' 
+#' - A few labeled
+#' 
+#' - Group similar observations using clustering
+#' 
+#' - Use clustering informatio and class of labeled observations to assign a class to unlabelled observations
+#' 
+#' 
 #' ### Decision Tree
 #' 
 #' Loading Data
@@ -205,7 +222,7 @@ fancyRpartPlot(tree)
 #' 
 #' - nstart : #times R restarts with different centroids
 #' 
-#' - `my_km$tot.withinss`` <-- WSS
+#' - `my_km$tot.withinss` <-- WSS
 #' 
 #' - `my_km$betweenss` <-- BSS
 #' 
@@ -221,8 +238,6 @@ tmp <- tempfile()
 
 curl_download('https://archive.ics.uci.edu/ml/machine-learning-databases/00236/seeds_dataset.txt', tmp, handle=h)
 data <-read.table(tmp, header=F)
-head(data)
-ncol(data)
 
 #' defining data feature names and save the data as an csv file
 feature_names <- c('area', 'perimeter', 'compactness','length', 'width', 'asymmetry',
@@ -258,7 +273,7 @@ table(seeds_km_1$cluster, seeds_km_2$cluster)
 
 #' cluster 4 from `seeds_km_1` completely contains cluster 5 from  seeds_km_2
 #' 
-
+#+ message = FALSE
 library(cluster.datasets)
 data("new.haven.school.scores")
 new.haven.school.scores %>% head
@@ -311,12 +326,155 @@ plot(ratio_ss, type = "b", xlab = "k")
 #' 
 #' - Jaccard's Coefficient
 #' 
+#' ### Standardized vs non-standardized clustering
+#' 
+#+ message = FALSE
+library(cluster.datasets)
+
+#' Loading dataset
+run_record <- read_csv("data/run_record.csv")
+#' 
+#' Explore your data with str() and summary()
+str(run_record)
+summary(run_record)
+
+#' Cluster run_record using k-means: run_km. 5 clusters, repeat 20 times
+run_km <- kmeans(run_record, 5, 20)
+
+#' Plot the 100m as function of the marathon. Color using clusters
+plot(run_record$marathon, run_record$X100m, col = run_km$cluster)
+
+
+#' Calculate Dunn's index: dunn_km. Print it
+#+ message = FALSE
+library(clValid)
+dunn_km <- dunn(clusters = run_km$cluster, 
+                Data = run_record)
+
+dunn_km
+
+run_record_sc <- scale(run_record)
+run_km_sc <- kmeans(run_record_sc, 5, 20)
+
+plot(run_record$marathon, 
+     run_record$X100m, 
+     col = run_km_sc$cluster)
+
+table(run_km$cluster, 
+      run_km_sc$cluster)
+
+dunn_km_sc <- dunn(clusters = run_km_sc$cluster, Data = run_record_sc)
+
+#' ### Hierarchical Clustering
+#' 
+#' Bottom-up
+#' - Starts from the objects
+#' - Builds a hierarchy of clusters
+#' 
+#' Find the closest pair of clusters --> Merge them
+#' 
+#' Compute  distance between new cluster and old ones
+#' 
+#' Repeat steps two and three --> Cone cluster
+#' 
+#' ### Linkage-Methods
+#' 
+#' Simple-Linkage : minimal distance between clusters
+#' 
+#' Complete-Linkage : maximal distance between clusters
+#' 
+#' Average-Linkage: average distance between clusters
+#' 
+#' Single_linkage : chaining
+#'  - Often undesired
+#'  - Can be great outlkier detector
+#'  
+#'  Dendrogram
+#' 
+#' Hierachical : Pro and Cons
+#' 
+#'  - Pros
+#'      * In-depth analysis
+#'      * Linkage-methods --> Different pattern
+#'   
+#'  - Cons
+#'      * High computational cost
+#'      * Can never undo merges
+#'   
+#'   
+#' K-Means : Pro and Cons
+#' 
+#'  - Pros
+#'      * Can undo merges
+#'      * Fast computations
+#'      
+#'  - Cons
+#'      * Fixed 
+#'      * Dependent on starting centroids
+#'
+#'
+run_dist <- dist(run_record_sc)
+
+run_single <- hclust(run_dist, method = "single")
+
+memb_single <- cutree(run_single, k=5)
+
+plot(run_single)
+rect.hclust(run_single,
+            k= 5,
+            border = 2:6)
+
+#' Apply hclust() to run_dist: run_complete
+run_complete <- hclust(run_dist, method = "complete")
+
+#' Apply cutree() to run_complete: memb_complete
+memb_complete <- cutree(run_complete, k=5)
+
+#' Apply plot() on run_complete to draw the dendrogram
+plot(run_complete)
+rect.hclust(run_complete, k=5, border = 2:6)
+
+#' table() the clusters memb_single and memb_complete. Put memb_single in the rows
+table(memb_single, 
+      memb_complete)
+
+
+#' Hierarchical vs k-means
+#' 
+#' Dunn's index for k-means : dunn_km
+
+dunn_km <- dunn(clusters = run_km_sc$cluster, 
+                Data = run_record_sc)
+
+dunn_km
+
+dunn_single <-dunn(clusters = memb_single, Data = run_record_sc)
+dunn_single
+
+dunn_complete <- dunn(clusters = memb_complete, Data = run_record_sc)
+dunn_complete
+
+table(run_km_sc$cluster, memb_single)
+table(run_km_sc$cluster, memb_complete)
+
+#' Clustering US states based on criminal acticity
 #' 
 
+set.seed(1)
+crime_data <- read_csv("./data/crime_data.csv")
 
+crime_data_sc <- scale(crime_data)
+crime_km <- kmeans(crime_data_sc, 4, 20)
 
+dist_matrix <- dist(crime_data_sc)
+crime_single <- hclust(dist_matrix, method =  "single")
 
+memb_single <- cutree(crime_single, 4)
 
+dunn_km <- dunn(clusters = crime_km$cluster, Data = crime_data_sc)
 
+dunn_single <- dunn(clusters = memb_single, Data = crime_data_sc)
 
+dunn_km
+dunn_single
 
