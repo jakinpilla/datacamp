@@ -1,0 +1,39 @@
+# Get the number of observation...
+n_obs <- nrow(Sonar)
+
+# Shuffle row indices : permuted_rows...
+permuted_rows <- sample(n_obs)
+
+# Randomly order data : Sonar...
+Sonar_shuffled <- Sonar[permuted_rows, ]
+
+# Identify row to split on : split...
+split <- round(n_obs * 0.60)
+
+# Create train...
+train <- Sonar_shuffled[1:split, ]
+
+# Create test...
+test <- Sonar_shuffled[(split+1): n_obs, ]
+
+# Fit glm model : model...
+model <- glm(Class ~. ,
+             family = "binomial",
+             data = train)
+
+# Prdict on test : p...
+p <- predict(model, test, type = "response")
+
+
+# Calculate a confusion matrix...
+
+# If p exceeds threshold of .5, M else R : m_or_r...
+m_or_r <- ifelse(p > .5, "M", "R")
+
+# Convert to factor : p-class...
+p_class <- factor(m_or_r, levels = levels(test[["Class"]]))
+
+#  Create confusion matrix...
+confusionMatrix(p_class, test$Class)
+
+                  
