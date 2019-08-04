@@ -170,6 +170,45 @@ map(gh_repos,
   map(~max(.x))
 
 # Graph in purrr...
+# data.frame(
+#   public_repos = c(52, 168, 67, 26, 99, 31),
+#   followers = c(303, 780, 3958, 115, 213, 34)
+# ) -> gh_users_df
+
+gh_users_df <- gh_users %>% map_df(`[`, c("public_repos", "followers"))
+
+ggplot(data = gh_users_df, 
+       aes(x = public_repos, y = followers)) + geom_point()
+
+map_df(gh_users, `[`,
+       c("login", "name", "followers", "public_repos")) %>%
+  ggplot(., aes(x = followers, y = public_repos)) + geom_point()
+
+
+# Turn data into correct dataframe format...
+library(tidyverse)
+film_by_character <- tibble(
+  filmtitle = map_chr(sw_films, "title")) %>%
+    mutate(filmtitle, character = map(sw_films, "characters")) %>% unnest()
+
+sw_characters <- map_df(sw_people,
+                        `[`,
+                        c("height", "mass", "name", "url"))
+
+# Join two new objects...
+characeter_data <- inner_join(film_by_character, sw_characters, by = c("character" = "url")) %>%
+  mutate(height = as.numeric(height), mass = as.numeric(mass))
+
+characeter_data
+
+# Plot the heights, faceted by film title...
+ggplot(characeter_data, aes(x = height)) +
+  geom_histogram(stat = "count") +
+  facet_wrap(~filmtitle)
+
+
+
+
 
 
 
