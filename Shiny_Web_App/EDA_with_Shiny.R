@@ -1,30 +1,58 @@
 library(shiny)
 library(gapminder)
 
+my_css <- "
+#download_data {
+  /* Change the background color of the download button to orange. */
+  background: orange;
+  
+  /* Change the text size to 20 pixels. */
+  font-size: 15px;
+}
+
+#table{
+  /* Change the text color of the table to red.*/
+  color: steelblue;
+  font-size : 14px;
+} 
+  
+}
+"
+
 ui <- fluidPage(
+  
   h1("Gapminder"),
   
-  # Add a slider for life expectancy filer
-  sliderInput(inputId = "life", 
-              label = "Life expectancy",
-              min = 0,
-              max = 120,
-              value = c(30, 50)),
+  tags$style(my_css),
   
-  # Add a continent selector dropdown..
-  selectInput("continent", "Continent", 
-              choices = c("All", levels(gapminder$continent))),
-  
-  # Add a download button...
-  downloadButton(outputId = "download_data", label = "Download"),
-
-  # Add a plot output...
-  plotOutput("plot"),
-  
-  # Add a placeholder for a table output...
-  tableOutput("table")
+  tabsetPanel(
+    # Create an "Input" tab...
+    tabPanel("Inputs",
+      # Add a slider for life expectancy filer
+      sliderInput(inputId = "life", 
+                  label = "Life expectancy",
+                  min = 0, max = 120, value = c(30, 50)),
+      
+      # Add a continent selector dropdown..
+      selectInput("continent", "Continent", 
+                  choices = c("All", levels(gapminder$continent))),
+      
+      # Add a download button...
+      downloadButton(outputId = "download_data", label = "Download")
+    ),
+    
+    tabPanel("Plot",
+      # Add a plot output...
+      plotOutput("plot")
+    ),
+    
+    tabPanel("Table",
+      # Add a placeholder for a table output...
+      DT::dataTableOutput("table")
+    )
+  )
 )
-
+  
 server <- function(input, output) {
   
   # Create a reactive variable named "filtered_data"...
@@ -41,7 +69,7 @@ server <- function(input, output) {
   })
   
   # Call the appropriate render function...
-  output$table <- renderTable({
+  output$table <- DT::renderDataTable({
     data <- filtered_data()
     data
   })
