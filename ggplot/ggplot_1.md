@@ -240,6 +240,8 @@ ggplot(mtcars, aes(x = mpg, y = 0)) +
 
 ![](ggplot_1_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
+## Scatter Plot
+
 ``` r
 ggplot(diamonds, aes(carat, price, col = clarity)) + geom_point() -> p1
 ggplot(diamonds, aes(carat, price, col = clarity)) + geom_point(alpha = .3) -> p2
@@ -257,3 +259,18 @@ grid.arrange(p1, p2, ncol = 2)
 ```
 
 ![](ggplot_1_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+## Histograms
+
+``` r
+ggplot(mtcars, aes(x = mpg)) + geom_histogram() -> p1
+ggplot(mtcars, aes(x = mpg)) + geom_histogram(binwidth = 1) -> p2
+ggplot(mtcars, aes(x = mpg)) + geom_histogram(binwidth = 1, aes(y = ..density..)) -> p3
+ggplot(mtcars, aes(x = mpg, y = ..density..)) + geom_histogram(binwidth = 1, fill = "steelblue") -> p4
+
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](ggplot_1_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
