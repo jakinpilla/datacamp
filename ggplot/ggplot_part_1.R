@@ -1,5 +1,8 @@
 library(tidyverse)
 
+# iris.wide ---------------------------------------------------------------
+
+
 iris %>% colnames()
 
 iris %>%
@@ -27,5 +30,14 @@ df.sepal_1 %>%
 ggplot(iris.wide, aes(Length, Width, col = Part)) + geom_point()
 
 
+# iris.wide2 --------------------------------------------------------------
+iris %>% dim()
+
+iris.wide %>%
+  gather(Length, Width, key = "Measure", 
+         value = "value", -Species, -Part) %>%
+  select(Measure, Part, Species, value)
+
+?gather
 
 

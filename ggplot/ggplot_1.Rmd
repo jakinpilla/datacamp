@@ -2,11 +2,14 @@
 title: "ggplot_1"
 author: "Daniel_Kim"
 date: '2019 8 15 '
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
-setwd("~/datacamp/ggplot")
+setwd("~/datacamp/ggplot"); gc()
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(reticulate)
@@ -45,6 +48,17 @@ iris %>%
 
 iris_wide %>% head()
 ```
+
+```{r}
+iris %>%
+  mutate(Flower = (1:nrow(iris))) %>%
+  gather(key, value, -Species, -Flower) %>%
+  separate(key, c("Part", "Measure"), "\\.") %>%
+  spread(Measure, value) -> iris.wide
+
+iris.wide %>% head()
+```
+
 
 ```{python}
 iris_wide = r.iris_wide
@@ -87,4 +101,69 @@ iris %>%
 
 iris_tidy %>% head()
 ```
+
+```{r}
+iris %>%
+  gather(key, Value, -Species) %>%
+  separate(key, c("Part", "Measure"), "\\.") -> iris_tidy; iris_tidy %>% head()
+```
+
+
+```{r}
+str(iris)
+```
+
+```{r}
+str(iris_wide)
+```
+
+```{r}
+str(iris_tidy)
+```
+
+```{r}
+ggplot(iris_tidy, aes(x = Species, y = Value, col = Part)) + 
+  geom_jitter() + 
+  facet_grid(. ~ Measure)
+```
+
+```{r}
+ggplot(iris_wide, aes(Length, Width, color = Part)) + geom_jitter() + facet_grid(. ~ Species)
+```
+
+
+```{r}
+ggplot(mtcars, aes(x= wt, y = mpg, fill = cyl)) + geom_point(shape = 21, size = 4, alpha = .6)
+```
+
+```{r}
+ggplot(mtcars, aes(mpg, qsec, 
+                   col = factor(cyl),
+                   shape = factor(am),
+                   size = (hp/wt))) + geom_point()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
