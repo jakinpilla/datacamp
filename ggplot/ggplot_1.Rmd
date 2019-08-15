@@ -2,10 +2,7 @@
 title: "ggplot_1"
 author: "Daniel_Kim"
 date: '2019 8 15 '
-output:
-  html_document: default
-  pdf_document: default
-  word_document: default
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -13,13 +10,10 @@ setwd("~/datacamp/ggplot"); gc()
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(reticulate)
+library(gridExtra)
 use_python("C:/Anaconda3/python.exe")
 ```
 
-```{r cars}
-summary(iris)
-iris %>% as_tibble() %>% head()
-```
 
 ```{python}
 import numpy as np
@@ -133,22 +127,64 @@ ggplot(iris_wide, aes(Length, Width, color = Part)) + geom_jitter() + facet_grid
 
 
 ```{r}
-ggplot(mtcars, aes(x= wt, y = mpg, fill = cyl)) + geom_point(shape = 21, size = 4, alpha = .6)
-```
-
-```{r}
+ggplot(mtcars, aes(x= wt, y = mpg, fill = cyl)) + geom_point(shape = 21, size = 4, alpha = .6) -> p1
 ggplot(mtcars, aes(mpg, qsec, 
                    col = factor(cyl),
                    shape = factor(am),
-                   size = (hp/wt))) + geom_point()
+                   size = (hp/wt))) + geom_point() -> p2
+grid.arrange(p1, p2, ncol = 1)
+```
 
+```{r}
+cyl.am <- ggplot(mtcars, aes(x = factor(cyl), fill = factor(am)))
+```
+
+```{r, message=FALSE}
+library(gridExtra)
+cyl.am + geom_bar(position = "stack") + ggtitle("stack") + 
+  scale_x_discrete("Cylinders") + scale_y_continuous("Number") + 
+  scale_fill_manual("Transmission", values = c('red', 'steelblue'), labels = c("Manual", "Automatic")) -> p1
+cyl.am + geom_bar(position = "fill") + ggtitle("fill") -> p2
+cyl.am + geom_bar(position = "dodge") + ggtitle("dodge") +
+  scale_x_discrete("Cylinders") + scale_y_continuous("Number") + 
+  scale_fill_manual("Transmission", values = c('red', 'steelblue'), labels = c("Manual", "Automatic")) -> p3
+cyl.am + geom_bar() + ggtitle("default") -> p4
+
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
+
+```{r}
+ggplot(mtcars, aes(x = mpg, y = 0)) +
+  geom_jitter() +
+  scale_y_continuous(limits=c(-2, 2))
+```
+
+## Scatter Plot
+```{r}
+ggplot(diamonds, aes(carat, price, col = clarity)) + geom_point() -> p1
+ggplot(diamonds, aes(carat, price, col = clarity)) + geom_point(alpha = .3) -> p2
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+```{r}
+ggplot(diamonds, aes(clarity, carat, col = price)) + geom_point(alpha = .5) -> p1
+ggplot(diamonds, aes(clarity, carat, col = price)) + geom_point(alpha = .5, position='jitter') -> p2
+
+grid.arrange(p1, p2, ncol = 2)
 ```
 
 
+## Histograms
 
+```{r}
+ggplot(mtcars, aes(x = mpg)) + geom_histogram() -> p1
+ggplot(mtcars, aes(x = mpg)) + geom_histogram(binwidth = 1) -> p2
+ggplot(mtcars, aes(x = mpg)) + geom_histogram(binwidth = 1, aes(y = ..density..)) -> p3
+ggplot(mtcars, aes(x = mpg, y = ..density..)) + geom_histogram(binwidth = 1, fill = "steelblue") -> p4
 
-
-
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
 
 
 
