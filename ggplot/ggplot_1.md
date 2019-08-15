@@ -274,3 +274,69 @@ grid.arrange(p1, p2, p3, p4, ncol = 2)
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](ggplot_1_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+``` r
+mtcars$cyl <- as.factor(mtcars$cyl)
+mtcars$am <- as.factor(mtcars$am)
+ggplot(mtcars, aes(x = cyl, fill = am)) + 
+  geom_bar(position = "dodge") +
+  ggtitle("Dodge") +
+  scale_x_discrete("Cylinders") + scale_y_continuous("Number") + 
+  scale_fill_manual("Transmission", values = c('red', 'steelblue'), labels = c("Manual", "Automatic")) -> p1
+
+posn_d <- position_dodge(width = .2)
+ggplot(mtcars, aes(x = cyl, fill = am)) + 
+  geom_bar(position = posn_d, alpha = .6) +
+  ggtitle("Positon_Dodge") +
+  scale_x_discrete("Cylinders") + scale_y_continuous("Number") + 
+  scale_fill_manual("Transmission", values = c('red', 'steelblue'), labels = c("Manual", "Automatic")) -> p2
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+![](ggplot_1_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+``` r
+# default position : "stack"
+ggplot(mtcars, aes(mpg, fill = cyl)) + 
+  geom_histogram(binwidth = 1) + 
+  scale_fill_brewer(palette = "Set1") -> p1
+
+# change position to "identity"
+ggplot(mtcars, aes(mpg, fill = cyl)) + 
+  geom_histogram(binwidth = 1, position = "identity") + 
+  scale_fill_brewer(palette = "Set1") -> p2
+
+# change geom to freqploy: position is "identity" by default
+ggplot(mtcars, aes(mpg, color = cyl)) + 
+  geom_freqpoly(binwidth = 1) + 
+  scale_fill_brewer(palette = "Set1") -> p3
+
+grid.arrange(p1, p2, p3) 
+```
+
+![](ggplot_1_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+``` r
+ggplot(mtcars, aes(x = cyl, fill = am)) + 
+  geom_bar() +
+  scale_fill_brewer(palette = "Set1") -> p1
+
+Vocab <- read_csv("vocab.csv")
+Vocab$year <- as.integer(Vocab$year)
+Vocab$sex <- as.factor(Vocab$sex)
+Vocab$education <- as.factor(Vocab$education)
+Vocab$vocabulary <- as.factor(Vocab$vocabulary)
+
+ggplot(Vocab, aes(x = education, fill = vocabulary)) + geom_bar(position = "fill") + scale_fill_brewer() -> p2
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+    ## Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette Blues is 9
+    ## Returning the palette you asked for with that many colors
+
+![](ggplot_1_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+
+  - There are only 9 colours in the palette, and since there are 11
+    categories, the Vocab plot looked strange.

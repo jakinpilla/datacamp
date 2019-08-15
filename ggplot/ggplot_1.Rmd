@@ -186,12 +186,61 @@ ggplot(mtcars, aes(x = mpg, y = ..density..)) + geom_histogram(binwidth = 1, fil
 grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
 
+```{r}
+mtcars$cyl <- as.factor(mtcars$cyl)
+mtcars$am <- as.factor(mtcars$am)
+ggplot(mtcars, aes(x = cyl, fill = am)) + 
+  geom_bar(position = "dodge") +
+  ggtitle("Dodge") +
+  scale_x_discrete("Cylinders") + scale_y_continuous("Number") + 
+  scale_fill_manual("Transmission", values = c('red', 'steelblue'), labels = c("Manual", "Automatic")) -> p1
 
+posn_d <- position_dodge(width = .2)
+ggplot(mtcars, aes(x = cyl, fill = am)) + 
+  geom_bar(position = posn_d, alpha = .6) +
+  ggtitle("Positon_Dodge") +
+  scale_x_discrete("Cylinders") + scale_y_continuous("Number") + 
+  scale_fill_manual("Transmission", values = c('red', 'steelblue'), labels = c("Manual", "Automatic")) -> p2
 
+grid.arrange(p1, p2, ncol = 2)
+```
 
+```{r}
+# default position : "stack"
+ggplot(mtcars, aes(mpg, fill = cyl)) + 
+  geom_histogram(binwidth = 1) + 
+  scale_fill_brewer(palette = "Set1") -> p1
 
+# change position to "identity"
+ggplot(mtcars, aes(mpg, fill = cyl)) + 
+  geom_histogram(binwidth = 1, position = "identity") + 
+  scale_fill_brewer(palette = "Set1") -> p2
 
+# change geom to freqploy: position is "identity" by default
+ggplot(mtcars, aes(mpg, color = cyl)) + 
+  geom_freqpoly(binwidth = 1) + 
+  scale_fill_brewer(palette = "Set1") -> p3
 
+grid.arrange(p1, p2, p3) 
+```
+
+```{r, message= FALSE}
+ggplot(mtcars, aes(x = cyl, fill = am)) + 
+  geom_bar() +
+  scale_fill_brewer(palette = "Set1") -> p1
+
+Vocab <- read_csv("vocab.csv")
+Vocab$year <- as.integer(Vocab$year)
+Vocab$sex <- as.factor(Vocab$sex)
+Vocab$education <- as.factor(Vocab$education)
+Vocab$vocabulary <- as.factor(Vocab$vocabulary)
+
+ggplot(Vocab, aes(x = education, fill = vocabulary)) + geom_bar(position = "fill") + scale_fill_brewer() -> p2
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+- There are only 9 colours in the palette, and since there are 11 categories, the Vocab plot looked strange.
 
 
 
