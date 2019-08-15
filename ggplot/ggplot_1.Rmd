@@ -1,0 +1,90 @@
+---
+title: "ggplot_1"
+author: "Daniel_Kim"
+date: '2019 8 15 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+setwd("~/datacamp/ggplot")
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(reticulate)
+use_python("C:/Anaconda3/python.exe")
+```
+
+```{r cars}
+summary(iris)
+iris %>% as_tibble() %>% head()
+```
+
+```{python}
+import numpy as np
+import pandas as pd
+
+iris = r.iris
+iris.plot()
+```
+
+```{r}
+iris %>%
+  as_tibble() %>%
+  rowid_to_column() %>%
+  gather(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, key = "Featrures", value = "value") %>%
+  head()
+```
+
+```{r}
+iris %>%
+  as_tibble() %>%
+  rowid_to_column() %>%
+  gather(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, key = "Features", value = "value") %>%
+  separate(Features, sep = "\\.", into = c("Part", "Measure")) %>%
+  spread(Measure, value) %>%
+  select(-rowid) -> iris_wide
+
+iris_wide %>% head()
+```
+
+```{python}
+iris_wide = r.iris_wide
+iris_wide['Part'].value_counts()
+```
+
+```{python}
+iris_wide.head()
+```
+
+```{python}
+import matplotlib.pyplot as plt
+plt.scatter(iris_wide['Length'], iris_wide['Width'], alpha=.5)
+```
+
+```{r}
+iris %>%
+  rowid_to_column() %>%
+  gather(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, key = "Features", value = "value") %>%
+  separate(Features, sep = "\\.", into = c("Part", "Measure")) %>%
+  spread(Species, value) -> iris_tmp
+
+iris_tmp %>% filter(!is.na(setosa)) %>% select(-versicolor, -virginica) -> iris_tmp_1
+iris_tmp %>% filter(!is.na(versicolor)) %>% select(versicolor) -> iris_tmp_2
+iris_tmp %>% filter(!is.na(virginica)) %>% select(virginica) -> iris_tmp_3
+
+iris_tmp_1 %>%
+  bind_cols(iris_tmp_2, iris_tmp_3) %>%
+  select(-rowid) -> iris_wide_2
+
+iris_wide_2 %>% head()
+```
+
+```{r}
+iris %>%
+  rowid_to_column() %>%
+  gather(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, key = "Features", value = "value") %>%
+  separate(Features, sep = "\\.", into = c("Part", "Measure")) %>%
+  select(-rowid) -> iris_tidy
+
+iris_tidy %>% head()
+```
+
