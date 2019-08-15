@@ -2,7 +2,7 @@
 title: "Scope and User defined functions"
 author: "Daniel_Kim"
 date: '2019 8 15 '
-output: html_document
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
