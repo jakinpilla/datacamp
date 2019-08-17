@@ -115,3 +115,61 @@ head(fish.tidy)
 ```{r}
 ggplot(fish.tidy, aes(Year, Capture, col = Species)) + geom_line()
 ```
+
+### qplot
+
+```{r}
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() -> p1
+
+qplot(wt, mpg, data = mtcars) -> p2
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+```{r, message=FALSE}
+# "Basic" dot plot, with geom_point():
+ggplot(mtcars, aes(cyl, wt, col = am)) +
+  geom_point(position = position_jitter(0.2, 0)) -> p1
+
+# 1 - "True" dot plot, with geom_dotplot():
+ggplot(mtcars, aes(cyl, wt, fill = am)) +
+  geom_dotplot(binaxis = "y", stackdir = "center") -> p2
+
+# 2 - qplot with geom "dotplot", binaxis = "y" and stackdir = "center"
+qplot(
+  cyl, wt,
+  data = mtcars,
+  fill = am,
+  geom = "dotplot",
+  binaxis = "y",
+  stackdir = "center"
+) -> p3
+
+grid.arrange(p1, p2, p3, ncol = 3)
+```
+
+```{r}
+# About group option...
+ggplot(ChickWeight, aes(x = Time, y = weight, col = Diet)) +
+  geom_line() -> p1
+
+ggplot(ChickWeight, aes(x = Time, y = weight, col = Diet)) +
+  geom_line(aes(group = Chick)) -> p2 # to draw one line per chick, 'group = Chick'
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+
+```{r}
+data("ChickWeight")
+# map Diet onto col.
+ggplot(ChickWeight, aes(x = Time, y = weight, col = Diet)) +
+  geom_line(aes(group = Chick)) -> p1
+
+# add geom_smooth()
+ggplot(ChickWeight, aes(x = Time, y = weight, col = Diet)) +
+  geom_line(aes(group = Chick), alpha = .3) + geom_smooth(lwd = 2, se = FALSE, alpha = .3) -> p2
+
+grid.arrange(p1, p2, ncol = 2)
+```
