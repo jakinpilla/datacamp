@@ -148,20 +148,16 @@ survey
 write_csv(survey, './survey.csv')
 
 
+tips <- read_csv('tips.csv')
+
+tips %>% 
+  mutate(total_dollar = paste0('$', as.character(total_bill))) -> tips_with_total_dollar 
+
+tips_with_total_dollar %>%
+  write_csv('./tips_with_total_dollar.csv')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+df.tmp <- read_csv("./billboard_clean.csv")
+df.tmp %>% 
+  rename(artist = artist_inverted) %>%
+  select(-X1) %>% write_csv('./billboard_cleaned.csv')
