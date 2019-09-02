@@ -161,3 +161,37 @@ df.tmp <- read_csv("./billboard_clean.csv")
 df.tmp %>% 
   rename(artist = artist_inverted) %>%
   select(-X1) %>% write_csv('./billboard_cleaned.csv')
+
+
+gapminder <- read_csv("./gapminder.csv")
+gapminder %>% colnames()
+gapminder %>% head() %>% View()
+gapminder %>%
+  select('Life expectancy', starts_with("18")) -> g1800s_1
+
+
+g1800s_1 %>%
+  distinct(`Life expectancy`)
+
+g1800s_1 %>% 
+  group_by(`Life expectancy`) %>%
+  slice(1) -> g1800s
+
+g1800s %>% write_csv('./g1800s.csv')
+
+
+gapminder %>%
+  select('Life expectancy', starts_with("19")) %>%
+  group_by(`Life expectancy`) %>%
+  slice(1) -> g1900s
+
+g1900s %>% 
+  write_csv('./g1900s.csv')
+
+gapminder %>%
+  select('Life expectancy', starts_with("20")) %>%
+  group_by(`Life expectancy`) %>%
+  slice(1) -> g2000s
+
+g2000s %>% 
+  write_csv('./g2000s.csv')
