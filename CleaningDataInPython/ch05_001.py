@@ -151,7 +151,7 @@ print(gapminder_agg.head())
 print(gapminder_agg.tail())
 
 # Add second subplot
-plt.subplot(2, 1, 2)s
+plt.subplot(2, 1, 2)
 
 # Create a line plot of life expectancy per year
 gapminder_agg.plot()
