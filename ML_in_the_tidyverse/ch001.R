@@ -83,3 +83,41 @@ pop_mean <- pop_nested %>%
 
 # Take a look at pop_mean
 head(pop_mean)
+
+
+# Calculate mean population and store result as a double
+pop_mean <- gap_nested %>%
+  mutate(mean_pop = map_dbl(data, ~mean(.x$population, na.rm = T)))
+
+# Take a look at pop_mean
+head(pop_mean)
+
+
+# Build a linear model for each country
+gap_models <- gap_nested %>%
+  mutate(model = map(data, ~lm(formula = life_expectancy~year, data = .x)))
+
+# Extract the model for Algeria    
+algeria_model <- gap_models$model[[2]]
+
+# View the summary for the Algeria model
+summary(algeria_model)
+
+##----
+
+library(broom)
+
+# Extract the coefficients of the algeria_model as a dataframe
+tidy(algeria_model)
+
+# Extract the statistics of the algeria_model as a dataframe
+glance(algeria_model)
+
+# Build the augmented dataframe
+algeria_fitted <- augment(algeria_model)
+
+# Compare the predicted values with the actual values of life expectancy
+algeria_fitted %>% 
+  ggplot(aes(x = year)) +
+  geom_point(aes(y = life_expectancy)) + 
+  geom_line(aes(y = .fitted), color = "red")
