@@ -1,3 +1,5 @@
+
+
 # Extract the coefficient statistics of each model into nested dataframes
 model_coef_nested <- gap_models %>% 
   mutate(coef = map(model, ~tidy(.x)))

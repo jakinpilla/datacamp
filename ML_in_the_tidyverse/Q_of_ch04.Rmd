@@ -1,0 +1,162 @@
+---
+title: "Questions of ch04"
+output: rmarkdown::github_document
+---
+
+Loding dataset...
+
+```{r, message = FALSE, warning=FALSE}
+library(tidyverse)
+library(rsample)
+gapminder <- readRDS('./data/gapminder.rds')
+gapminder %>% head()
+```
+
+Prepare the initial split object
+```{r}
+set.seed(42)
+gap_split <- initial_split(gapminder, prop = .75)
+```
+
+Extract the training and testing dataframe
+
+```{r}
+
+training_data <- training(gap_split)
+
+testing_data <- testing(gap_split)
+
+# Calculate the dimensions of both training_data and testing_data
+dim(training_data)
+dim(testing_data)
+```
+
+
+Prepare the dataframe containing the cross validation partitions
+
+```{r}
+set.seed(42)
+
+cv_split <- vfold_cv(training_data, v = 5)
+
+cv_data <- cv_split %>% 
+  mutate(
+    # Extract the train dataframe for each split
+    train = map(splits, ~training(.x)), 
+    # Extract the validate dataframe for each split
+    validate = map(splits, ~testing(.x))
+  )
+```
+
+
+Use head() to preview cv_data
+```{r}
+head(cv_data)
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+
+```{r, eval = FALSE}
+
+```
+
+
+```{r, eval = FALSE}
+
+```
