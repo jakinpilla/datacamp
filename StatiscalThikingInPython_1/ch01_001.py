@@ -8,9 +8,6 @@ pd.set_option('display.max_rows', 50)
 pd.set_option('display.max_columns', 50)
 pd.set_option('display.width', 100)
 
-import matplotlib.pyplot as plt
-
-
 # Import plotting modules
 import matplotlib.pyplot as plt 
 import seaborn as sns
@@ -18,6 +15,7 @@ import seaborn as sns
 # Set default Seaborn style
 sns.set()
 
+plt.clf()
 # Plot histogram of versicolor petal lengths
 _ = plt.hist(versicolor_petal_length)
 
