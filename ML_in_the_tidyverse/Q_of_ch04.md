@@ -6,46 +6,51 @@ Loding dataset…
 ``` r
 library(tidyverse)
 library(rsample)
-gapminder <- readRDS('./data/gapminder.rds')
-gapminder %>% head()
+attrition <- readRDS('./data/attrition.rds') %>% as_tibble()
+attrition %>% colnames()
 ```
 
-    ## # A tibble: 6 x 7
-    ##   country  year infant_mortality life_expectancy fertility population
-    ##   <fct>   <int>            <dbl>           <dbl>     <dbl>      <dbl>
-    ## 1 Algeria  1960             148.            47.5      7.65   11124892
-    ## 2 Algeria  1961             148.            48.0      7.65   11404859
-    ## 3 Algeria  1962             148.            48.6      7.65   11690152
-    ## 4 Algeria  1963             148.            49.1      7.65   11985130
-    ## 5 Algeria  1964             149.            49.6      7.65   12295973
-    ## 6 Algeria  1965             149.            50.1      7.66   12626953
-    ## # ... with 1 more variable: gdpPercap <int>
+    ##  [1] "Age"                      "Attrition"               
+    ##  [3] "BusinessTravel"           "DailyRate"               
+    ##  [5] "Department"               "DistanceFromHome"        
+    ##  [7] "Education"                "EducationField"          
+    ##  [9] "EnvironmentSatisfaction"  "Gender"                  
+    ## [11] "HourlyRate"               "JobInvolvement"          
+    ## [13] "JobLevel"                 "JobRole"                 
+    ## [15] "JobSatisfaction"          "MaritalStatus"           
+    ## [17] "MonthlyIncome"            "MonthlyRate"             
+    ## [19] "NumCompaniesWorked"       "OverTime"                
+    ## [21] "PercentSalaryHike"        "PerformanceRating"       
+    ## [23] "RelationshipSatisfaction" "StockOptionLevel"        
+    ## [25] "TotalWorkingYears"        "TrainingTimesLastYear"   
+    ## [27] "WorkLifeBalance"          "YearsAtCompany"          
+    ## [29] "YearsInCurrentRole"       "YearsSinceLastPromotion" 
+    ## [31] "YearsWithCurrManager"
 
 Prepare the initial split object
 
 ``` r
 set.seed(42)
-gap_split <- initial_split(gapminder, prop = .75)
+data_split <- initial_split(attrition, prop = .75)
 ```
 
 Extract the training and testing dataframe
 
 ``` r
-training_data <- training(gap_split)
-
-testing_data <- testing(gap_split)
+training_data <- training(data_split)
+testing_data <- testing(data_split)
 
 # Calculate the dimensions of both training_data and testing_data
 dim(training_data)
 ```
 
-    ## [1] 3003    7
+    ## [1] 1103   31
 
 ``` r
 dim(testing_data)
 ```
 
-    ## [1] 1001    7
+    ## [1] 367  31
 
 Prepare the dataframe containing the cross validation partitions
 
@@ -70,27 +75,124 @@ head(cv_data)
 ```
 
     ## # A tibble: 5 x 4
-    ##   splits             id    train                validate          
-    ## * <list>             <chr> <list>               <list>            
-    ## 1 <split [2.4K/601]> Fold1 <tibble [2,402 x 7]> <tibble [601 x 7]>
-    ## 2 <split [2.4K/601]> Fold2 <tibble [2,402 x 7]> <tibble [601 x 7]>
-    ## 3 <split [2.4K/601]> Fold3 <tibble [2,402 x 7]> <tibble [601 x 7]>
-    ## 4 <split [2.4K/600]> Fold4 <tibble [2,403 x 7]> <tibble [600 x 7]>
-    ## 5 <split [2.4K/600]> Fold5 <tibble [2,403 x 7]> <tibble [600 x 7]>
-
-Build the model using all training data and the best performing
-parameter…
+    ##   splits            id    train               validate           
+    ## * <list>            <chr> <list>              <list>             
+    ## 1 <split [882/221]> Fold1 <tibble [882 x 31]> <tibble [221 x 31]>
+    ## 2 <split [882/221]> Fold2 <tibble [882 x 31]> <tibble [221 x 31]>
+    ## 3 <split [882/221]> Fold3 <tibble [882 x 31]> <tibble [221 x 31]>
+    ## 4 <split [883/220]> Fold4 <tibble [883 x 31]> <tibble [220 x 31]>
+    ## 5 <split [883/220]> Fold5 <tibble [883 x 31]> <tibble [220 x 31]>
 
 ``` r
-best_model <- ranger(formula = ___, data = ___,
-                     mtry = ___, num.trees = 100, seed = 42)
+# Extract the first model and validate 
+model <- cv_models_lr$___[[___]]
+validate <- cv_models_lr$___[[___]]
 
-# Prepare the test_actual vector
-test_actual <- testing_data$___
+# Prepare binary vector of actual Attrition values in validate
+validate_actual <- ___ == "Yes"
 
-# Predict life_expectancy for the testing_data
-test_predicted <- predict(___, ___)$predictions
+# Predict the probabilities for the observations in validate
+validate_prob <- predict(___, ___, type = "response")
 
-# Calculate the test MAE
-mae(___, ___)
+# Prepare binary vector of predicted Attrition values for validate
+validate_predicted <- ___
+```
+
+``` r
+library(Metrics)
+
+# Compare the actual & predicted performance visually using a table
+table(___, ___)
+
+# Calculate the accuracy
+accuracy(___, ___)
+
+# Calculate the precision
+precision(___, ___)
+
+# Calculate the recall
+recall(___, ___)
+```
+
+``` r
+cv_prep_lr <- cv_models_lr %>% 
+  mutate(
+    # Prepare binary vector of actual Attrition values in validate
+    validate_actual = map(___, ~.x$___ == "___"),
+    # Prepare binary vector of predicted Attrition values for validate
+    validate_predicted = map2(.x = ___, .y = ___, ~predict(.x, .y, type = "response") > ___)
+  )
+```
+
+``` r
+# Calculate the validate recall for each cross validation fold
+cv_perf_recall <- cv_prep_lr %>% 
+  mutate(validate_recall = map2_dbl(___, ___, 
+                                       ~recall(actual = .x, predicted = .y)))
+
+# Print the validate_recall column
+cv_perf_recall$___
+
+# Calculate the average of the validate_recall column
+___
+```
+
+``` r
+library(ranger)
+
+# Prepare for tuning your cross validation folds by varying mtry
+cv_tune <- cv_data %>%
+  crossing(mtry = c(___)) 
+
+# Build a cross validation model for each fold & mtry combination
+cv_models_rf <- cv_tune %>% 
+  mutate(model = map2(___, ___, ~ranger(formula = Attrition~., 
+                                           data = .x, mtry = .y,
+                                           num.trees = 100, seed = 42)))
+```
+
+``` r
+cv_prep_rf <- cv_models_rf %>% 
+  mutate(
+    # Prepare binary vector of actual Attrition values in validate
+    validate_actual = map(validate, ~.x$___ == "___"),
+    # Prepare binary vector of predicted Attrition values for validate
+    validate_predicted = map2(.x = ___, .y = ___, ~predict(.x, .y, type = "response")$predictions == "Yes")
+  )
+
+# Calculate the validate recall for each cross validation fold
+cv_perf_recall <- cv_prep_rf %>% 
+  mutate(recall = map2_dbl(.x = ___, .y = ___, ~recall(actual = .x, predicted = .y)))
+
+# Calculate the mean recall for each mtry used  
+cv_perf_recall %>% 
+  group_by(___) %>% 
+  summarise(mean_recall = mean(___))
+```
+
+``` r
+# Build the logistic regression model using all training data
+best_model <- glm(formula = ___, 
+                  data = ___, family = "binomial")
+
+
+# Prepare binary vector of actual Attrition values for testing_data
+test_actual <- testing_data$___ == "___"
+
+# Prepare binary vector of predicted Attrition values for testing_data
+test_predicted <- predict(___, ___, type = "response") > ___
+```
+
+``` r
+# Compare the actual & predicted performance visually using a table
+___
+
+# Calculate the test accuracy
+___
+
+# Calculate the test precision
+___
+
+# Calculate the test recall
+___
 ```

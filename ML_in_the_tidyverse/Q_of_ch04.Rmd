@@ -8,23 +8,20 @@ Loding dataset...
 ```{r, message = FALSE, warning=FALSE}
 library(tidyverse)
 library(rsample)
-gapminder <- readRDS('./data/gapminder.rds')
-gapminder %>% head()
+attrition <- readRDS('./data/attrition.rds') %>% as_tibble()
+attrition %>% colnames()
 ```
 
 Prepare the initial split object
 ```{r}
 set.seed(42)
-gap_split <- initial_split(gapminder, prop = .75)
+data_split <- initial_split(attrition, prop = .75)
 ```
 
 Extract the training and testing dataframe
-
 ```{r}
-
-training_data <- training(gap_split)
-
-testing_data <- testing(gap_split)
+training_data <- training(data_split)
+testing_data <- testing(data_split)
 
 # Calculate the dimensions of both training_data and testing_data
 dim(training_data)
@@ -33,7 +30,6 @@ dim(testing_data)
 
 
 Prepare the dataframe containing the cross validation partitions
-
 ```{r}
 set.seed(42)
 
@@ -57,106 +53,130 @@ head(cv_data)
 
 
 ```{r, eval = FALSE}
+# Extract the first model and validate 
+model <- cv_models_lr$___[[___]]
+validate <- cv_models_lr$___[[___]]
 
+# Prepare binary vector of actual Attrition values in validate
+validate_actual <- ___ == "Yes"
+
+# Predict the probabilities for the observations in validate
+validate_prob <- predict(___, ___, type = "response")
+
+# Prepare binary vector of predicted Attrition values for validate
+validate_predicted <- ___
 ```
 
 
 
 ```{r, eval = FALSE}
+library(Metrics)
 
+# Compare the actual & predicted performance visually using a table
+table(___, ___)
+
+# Calculate the accuracy
+accuracy(___, ___)
+
+# Calculate the precision
+precision(___, ___)
+
+# Calculate the recall
+recall(___, ___)
 ```
 
 
 
 ```{r, eval = FALSE}
-
+cv_prep_lr <- cv_models_lr %>% 
+  mutate(
+    # Prepare binary vector of actual Attrition values in validate
+    validate_actual = map(___, ~.x$___ == "___"),
+    # Prepare binary vector of predicted Attrition values for validate
+    validate_predicted = map2(.x = ___, .y = ___, ~predict(.x, .y, type = "response") > ___)
+  )
 ```
 
 
 
 ```{r, eval = FALSE}
+# Calculate the validate recall for each cross validation fold
+cv_perf_recall <- cv_prep_lr %>% 
+  mutate(validate_recall = map2_dbl(___, ___, 
+                                       ~recall(actual = .x, predicted = .y)))
 
+# Print the validate_recall column
+cv_perf_recall$___
+
+# Calculate the average of the validate_recall column
+___
 ```
 
 
 
 ```{r, eval = FALSE}
+library(ranger)
 
+# Prepare for tuning your cross validation folds by varying mtry
+cv_tune <- cv_data %>%
+  crossing(mtry = c(___)) 
+
+# Build a cross validation model for each fold & mtry combination
+cv_models_rf <- cv_tune %>% 
+  mutate(model = map2(___, ___, ~ranger(formula = Attrition~., 
+                                           data = .x, mtry = .y,
+                                           num.trees = 100, seed = 42)))
 ```
 
 
 
 ```{r, eval = FALSE}
+cv_prep_rf <- cv_models_rf %>% 
+  mutate(
+    # Prepare binary vector of actual Attrition values in validate
+    validate_actual = map(validate, ~.x$___ == "___"),
+    # Prepare binary vector of predicted Attrition values for validate
+    validate_predicted = map2(.x = ___, .y = ___, ~predict(.x, .y, type = "response")$predictions == "Yes")
+  )
 
+# Calculate the validate recall for each cross validation fold
+cv_perf_recall <- cv_prep_rf %>% 
+  mutate(recall = map2_dbl(.x = ___, .y = ___, ~recall(actual = .x, predicted = .y)))
+
+# Calculate the mean recall for each mtry used  
+cv_perf_recall %>% 
+  group_by(___) %>% 
+  summarise(mean_recall = mean(___))
 ```
 
 
 
 ```{r, eval = FALSE}
+# Build the logistic regression model using all training data
+best_model <- glm(formula = ___, 
+                  data = ___, family = "binomial")
 
+
+# Prepare binary vector of actual Attrition values for testing_data
+test_actual <- testing_data$___ == "___"
+
+# Prepare binary vector of predicted Attrition values for testing_data
+test_predicted <- predict(___, ___, type = "response") > ___
 ```
 
 
 
 ```{r, eval = FALSE}
+# Compare the actual & predicted performance visually using a table
+___
 
+# Calculate the test accuracy
+___
+
+# Calculate the test precision
+___
+
+# Calculate the test recall
+___
 ```
 
-
-
-```{r, eval = FALSE}
-
-```
-
-
-
-```{r, eval = FALSE}
-
-```
-
-
-
-```{r, eval = FALSE}
-
-```
-
-
-
-```{r, eval = FALSE}
-
-```
-
-
-
-```{r, eval = FALSE}
-
-```
-
-
-
-```{r, eval = FALSE}
-
-```
-
-
-
-```{r, eval = FALSE}
-
-```
-
-
-
-```{r, eval = FALSE}
-
-```
-
-
-
-```{r, eval = FALSE}
-
-```
-
-
-```{r, eval = FALSE}
-
-```

@@ -143,3 +143,19 @@ test_predicted <- predict(best_model, testing_data)$predictions
 
 # Calculate the test MAE
 mae(test_actual, test_predicted)
+
+
+# Compare the actual & predicted performance visually using a table
+table(test_actual, test_predicted)
+
+# Calculate the test accuracy
+accuracy(test_actual, test_predicted)
+
+# Calculate the test precision
+precision(test_actual, test_predicted)
+
+# Calculate the test recall
+recall(test_actual, test_predicted)
+
+
+
