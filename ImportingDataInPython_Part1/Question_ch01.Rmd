@@ -1,0 +1,16 @@
+---
+title: "Questions of ch01(Import Data in Python(Part1)"
+output: rmarkdown::github_document
+---
+
+```{python, eval = FALSE}
+
+```
+
+
+
+```{python, eval = FALSE}
+
+```
+
+
