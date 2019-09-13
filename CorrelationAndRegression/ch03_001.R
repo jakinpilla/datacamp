@@ -1,3 +1,6 @@
+library(tidyverse)
+library(openintro)
+
 possum %>% head()
 
 bdims %>% colnames()
