@@ -111,3 +111,10 @@ print(ri.index)
 # Examine the columns
 print(ri.columns)
 
+ri.stop_outcome.value_counts()
+ri.stop_outcome.value_counts().sum()
+ri.shape
+
+ri.stop_outcome.value_counts(normalize=True)
+
+ri.driver_race.value_counts()
