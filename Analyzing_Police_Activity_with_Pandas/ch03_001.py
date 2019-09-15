@@ -141,8 +141,52 @@ k_zones.plot(kind = 'bar', stacked = True)
 # Display the plot
 plt.show()
 
-mapping = {'up':True, 'down':False}
-apple['is_up'] = apple.change.map(mapping)
+# mapping = {'up':True, 'down':False}
+# apple['is_up'] = apple.change.map(mapping)
+# 
+# apple.is_up.mean()
+# 
+# ir.
 
-apple.is_up.mean()
+ri.search_conducted
 
+search_rate = ri.groupby('violation').search_conducted.mean()
+
+plt.clf()
+search_rate.plot(kind = 'bar')
+plt.show()
+
+plt.clf()
+search_rate.sort_values().plot(kind= 'bar')
+plt.show()
+
+plt.clf()
+search_rate.sort_values().plot(kind= 'barh')
+plt.show()
+
+
+
+# Print the unique values in 'stop_duration'
+print(ri.stop_duration.unique())
+
+# Create a dictionary that maps strings to integers
+mapping = {'0-15 Min': 8, '16-30 Min': 23, '30+ Min': 45}
+
+# Convert the 'stop_duration' strings to integers using the 'mapping'
+ri['stop_minutes'] = ri.stop_duration.map(mapping)
+
+# Print the unique values in 'stop_minutes'
+print(ri.stop_minutes)
+
+# Calculate the mean 'stop_minutes' for each value in 'violation_raw'
+print(ri.groupby('violation_raw').stop_minutes.mean())
+
+# Save the resulting Series as 'stop_length'
+stop_length = ri.groupby('violation_raw').stop_minutes.mean()
+
+plt.clf()
+# Sort 'stop_length' by its values and create a horizontal bar plot
+stop_length.sort_values().plot(kind = 'barh')
+
+# Display the plot
+plt.show()
