@@ -50,3 +50,60 @@ ggplot(who_subset, aes(x = log10(cases_1992), y = reorder(country, cases_1992)))
 
 
 
+who_subset %>% 
+  # calculate the log fold change between 2016 and 2006
+  mutate(logFoldChange = log2(cases_2002/cases_1992)) %>% 
+  # set y axis as country ordered with respect to logFoldChange
+  ggplot(aes(x = logFoldChange, y = reorder(country, logFoldChange))) +
+  geom_point() +
+  # add a visual anchor at x = 0
+  geom_vline(xintercept  = 0)
+
+
+
+who_subset %>% 
+  mutate(logFoldChange = log2(cases_2002/cases_1992)) %>% 
+  ggplot(aes(x = logFoldChange, y = reorder(country, logFoldChange))) +
+  geom_point() +
+  geom_vline(xintercept = 0) +
+  xlim(-6,6) +
+  # add facet_grid arranged in the column direction by region and free_y scales
+  facet_grid(region ~., scales = 'free_y')
+
+
+
+amr_pertussis <- who_disease %>% 
+  filter(   # filter data to our desired subset
+    region == 'AMR', 
+    year == 1980, 
+    disease == 'pertussis'
+  )
+
+# Set x axis as country ordered with respect to cases. 
+ggplot(amr_pertussis, aes(x = reorder(country, cases), y = cases)) +
+  geom_col() +
+  # flip axes
+  coord_flip()
+
+
+amr_pertussis %>% 
+  # filter to countries that had > 0 cases. 
+  filter(cases > 0) %>%
+  ggplot(aes(x = reorder(country, cases), y = cases)) +
+  geom_col() +
+  coord_flip() +
+  theme(
+    # get rid of the 'major' y grid lines
+    panel.grid.major.y = element_blank()
+  )
+
+amr_pertussis %>% filter(cases > 0) %>% 
+  ggplot(aes(x = reorder(country, cases), y = cases)) + 
+  # switch geometry to points and set point size = 2
+  geom_point(size = 2) + 
+  # change y-axis to log10. 
+  scale_y_log10() +
+  # add theme_minimal()
+  theme_minimal() +
+  coord_flip()
+
