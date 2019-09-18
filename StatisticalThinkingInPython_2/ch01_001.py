@@ -168,7 +168,52 @@ plt.ylabel('sum of square of residuals')
 
 plt.show()
 
+anscombe = pd.read_csv('./data/anscombe.csv')
+x = np.array(anscombe.iloc[1:, 0]).astype('float')
+y = np.array(anscombe.iloc[1:, 1]).astype('float')
+x
+y
+# Perform linear regression: a, b
+a, b = np.polyfit(x, y, 1)
 
-# Anscomb
+# Print the slope and intercept
+print(a, b)
 
-pd.read_csv('./data/anscombe.csv')
+# Generate theoretical x and y data: x_theor, y_theor
+x_theor = np.array([3, 15])
+y_theor = a * x_theor + b
+
+plt.clf()
+# Plot the Anscombe data and theoretical line
+_ = plt.plot(x, y, marker = '.', linestyle = 'none')
+_ = plt.plot(x_theor, y_theor)
+
+# Label the axes
+plt.xlabel('x')
+plt.ylabel('y')
+
+# Show the plot
+plt.show()
+
+
+x1 = np.array(anscombe.iloc[1:, 0]).astype('float')
+x2 = np.array(anscombe.iloc[1:, 2]).astype('float')
+x3 = np.array(anscombe.iloc[1:, 4]).astype('float')
+x4 = np.array(anscombe.iloc[1:, 6]).astype('float')
+
+y1 = np.array(anscombe.iloc[1:, 1]).astype('float')
+y2 = np.array(anscombe.iloc[1:, 3]).astype('float')
+y3 = np.array(anscombe.iloc[1:, 5]).astype('float')
+y4 = np.array(anscombe.iloc[1:, 7]).astype('float')
+
+anscombe_x = [x1, x2, x3, x4]
+anscombe_y = [y1, y2, y3, y4]
+
+# Iterate through x,y pairs
+for x, y in zip(anscombe_x, anscombe_y):
+    # Compute the slope and intercept: a, b
+    a, b = np.polyfit(x, y, 1)
+    # Print the result
+    print('slope:', a, 'intercept:', b)
+
+
