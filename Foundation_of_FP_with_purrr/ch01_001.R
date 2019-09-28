@@ -169,3 +169,24 @@ data.frame(numcolors = map_dbl(wesanderson, ~length(.x)))
 
 # Working with unnamed lists...
 
+str(sw_films)
+
+# set_names()...
+sw_films %>%
+  set_names(map_chr(sw_films, "title")) -> sw_films
+
+names(sw_films)
+
+
+# -------------------------------------------------------------------------
+
+waterfowl_data <- list()
+
+waterfowl_data[['LakeErieS']] <- c(0, 0, 10, 5)
+waterfowl_data[['LakeErieN']] <- c(0, 0, 1000, 5)
+waterfowl_data[['LakeErieW']] <- c(10000, 0, 0, 5)
+waterfowl_data[['LakeErieE']] <- c(10, 10, 5, 0)
+
+map(waterfowl_data, ~.x %>% sum() %>% log())
+
+
