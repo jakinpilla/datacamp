@@ -46,5 +46,22 @@ ____ = ____.____(____)
 # Evaluate the training set RMSE of dt
 ____ = (____(____, ____))**()
 
+
 # Print RMSE_train
 print('Train RMSE: {:.2f}'.format(RMSE_train))
+
+
+# Set seed for reproducibility
+SEED=1
+
+# Instantiate lr
+lr = ____(random_state=SEED)
+
+# Instantiate knn
+knn = ____(n_neighbors=____)
+
+# Instantiate dt
+dt = ____(min_samples_leaf=____, random_state=SEED)
+
+# Define the list classifiers
+classifiers = [('Logistic Regression', lr), ('K Nearest Neighbours', knn), ('Classification Tree', dt)]
