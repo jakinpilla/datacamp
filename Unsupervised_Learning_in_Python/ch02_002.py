@@ -78,3 +78,39 @@ ct = ____
 print(ct)
 
 
+
+# loading data...
+samples_df = pd.read_csv('./data/seeds.csv', header = None)
+samples_df.head()
+samples = samples_df.values
+
+
+list_1 = ['Kama wheat']*70
+list_2 = ['Rosa wheat']*70
+list_3 = ['Canadian wheat']*70
+
+varieties = list_1 + list_2 + list_3
+
+di = {'Kama wheat' : 1, 'Rosa wheat': 2, 'Canadian wheat' : 3}
+variety_numbers = pd.DataFrame({'varieties' : varieties})['varieties'].map(di).values
+
+
+# Import TSNE
+____
+
+# Create a TSNE instance: model
+model = ____
+
+# Apply fit_transform to samples: tsne_features
+tsne_features = ____
+
+# Select the 0th feature: xs
+xs = tsne_features[:,0]
+
+# Select the 1st feature: ys
+ys = tsne_features[:,1]
+
+# Scatter plot, coloring by variety_numbers
+____
+plt.show()
+
