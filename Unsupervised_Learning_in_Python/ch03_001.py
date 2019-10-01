@@ -165,16 +165,137 @@ pca = PCA()
 pipeline = make_pipeline(scaler, pca)
 
 # Fit the pipeline to 'samples'
-pipeline.fit()
+pipeline.fit(samples)
 
+pca.n_components_
+pca.explained_variance_
+
+plt.clf()
 # Plot the explained variances
-features = ____
-plt.bar(____, ____)
+features = range(5) # features = range(pca.n_components_)
+plt.bar(features, pca.explained_variance_)
 plt.xlabel('PCA feature')
 plt.ylabel('variance')
 plt.xticks(features)
 plt.show()
 
 
+# PCA(n_components=2): keep the first 2 PCA features...
+
+iris_samples = iris.iloc[:, 0:4].values
+
+di = {'setosa' : 1, 'versicolor' : 2, 'virginica' : 3} 
+species = iris.iloc[:, 4].map(di)
+
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+
+pca.fit(samples)
+
+transformed = pca.transform(samples)
+
+transformed.shape
+
+xs = transformed[:, 0]
+ys = transformed[:, 1]
+
+plt.clf()
+plt.scatter(xs, ys, c = species)
+plt.show()
+
+# Assume the high variance features are informative...
+
+## With word frequency arrays...
+
+# scipy.sparse.csr_matrix instead Numpy array...
+
+# sklearn PCA doesn't support csr_matrix..Use sklearn TruncatedSVD instead...
+
+wiki_vec = pd.read_csv('./data/wikipedia-vectors.csv', index_col=0).iloc[:, 1:]
+wiki_vec.head()
+wiki_vec.shape
+
+from sklearn.decomposition import TruncatedSVD
+
+model = TruncatedSVD(n_components=3)
+
+model.fit(wiki_vec)
+
+transformed = model.transform(wiki_vec)
+
+## fish data loading...
+samples = pd.read_csv('./data/fish.csv', header = None).iloc[:, 1:].values
+
+# Import PCA
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+standard = StandardScaler()
+scaled_samples = standard.fit_transform(samples)
+
+# Create a PCA model with 2 components: pca
+pca = PCA(n_components=2)
 
 
+# Fit the PCA instance to the scaled samples
+pca.fit(scaled_samples)
+
+# Transform the scaled samples: pca_features
+pca_features = pca.transform(scaled_samples)
+
+# Print the shape of pca_features
+print(pca_features.shape)
+
+
+toy_doc = ['cats say meow', 'dogs say woof', 'dogs chase cats']
+
+# Import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Create a TfidfVectorizer: tfidf
+tfidf = TfidfVectorizer()
+
+# Apply fit_transform to document: csr_mat
+csr_mat = tfidf.fit_transform(toy_doc)
+
+# Print result of toarray() method
+print(csr_mat.toarray())
+
+# Get the words: words
+words = tfidf.get_feature_names()
+
+# Print words
+print(words)
+
+
+## 
+
+wiki_vec.head()
+
+from sklearn.decomposition import TruncatedSVD
+from sklearn.cluster import KMeans
+from sklearn.pipeline import make_pipeline
+
+svd = TruncatedSVD(n_components=50)
+
+# Create a KMeans instance: kmeans
+kmeans = KMeans(n_clusters=6)
+
+# Create a pipeline: pipeline
+pipeline = make_pipeline(svd, kmeans)
+
+
+# Import pandas
+import pandas as pd
+
+# Fit the pipeline to articles
+pipeline.fit(articles)
+
+# Calculate the cluster labels: labels
+labels = pipeline.predict(articles)
+
+# Create a DataFrame aligning labels and titles: df
+df = pd.DataFrame({'label': labels, 'article': titles})
+
+# Display df sorted by cluster label
+print(df.sort_values('label'))
