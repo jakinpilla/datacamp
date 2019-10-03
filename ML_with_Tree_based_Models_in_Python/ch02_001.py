@@ -180,10 +180,15 @@ pd.read_csv('./data/indian_liver_patient_preprocessed.csv', index_col = 0).colum
 
 indian = pd.read_csv('./data/indian_liver_patient_preprocessed.csv', index_col = 0)
 
-indian.iloc[:, -1]
+indian.head()
+
+X = indian.iloc[:, 0:10]
+y = indian.iloc[:, -1]
 
 # Set seed for reproducibility
 SEED=1
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = .3, random_state = SEED)
 
 # Instantiate lr
 lr = LogisticRegression(random_state=SEED)
@@ -197,24 +202,33 @@ dt = DecisionTreeClassifier(min_samples_leaf=.13, random_state=SEED)
 # Define the list classifiers
 classifiers = [('Logistic Regression', lr), ('K Nearest Neighbours', knn), ('Classification Tree', dt)]
 
-
 # Iterate over the pre-defined list of classifiers
 for clf_name, clf in classifiers:    
- 
     # Fit clf to the training set
-    clf.fit(____, ____)    
-   
+    clf.fit(X_train, y_train)   
     # Predict y_pred
-    y_pred = ____.____(____)
-    
+    y_pred = clf.predict(X_test)
     # Calculate accuracy
-    accuracy = ____(____, ____) 
-   
+    accuracy = accuracy_score(y_test, y_pred) 
     # Evaluate clf's accuracy on the test set
     print('{:s} : {:.3f}'.format(clf_name, accuracy))
 
 
+# Import VotingClassifier from sklearn.ensemble
+from sklearn.ensemble import VotingClassifier
 
+# Instantiate a VotingClassifier vc
+vc = VotingClassifier(estimators=classifiers)     
+
+# Fit vc to the training set
+vc.fit(X_train, y_train)   
+
+# Evaluate the test set predictions
+y_pred = vc.predict(X_test)
+
+# Calculate accuracy score
+accuracy = accuracy_score(y_test, y_pred)
+print('Voting Classifier: {:.3f}'.format(accuracy))
 
 
 
