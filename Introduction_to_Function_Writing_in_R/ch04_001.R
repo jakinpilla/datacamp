@@ -133,13 +133,13 @@ corn %>%
 # Wrap this code into a function
 fortify_with_metric_units <- function(data, crop) {
 data %>%
-  mutate(
-    farmed_area_ha = acres_to_hectares(farmed_area_acres),
-    yield_kg_per_ha = bushels_per_acre_to_kgs_per_hectare(
-      yield_bushels_per_acre, 
-      crop = crop
+    mutate(
+      farmed_area_ha = acres_to_hectares(farmed_area_acres),
+      yield_kg_per_ha = bushels_per_acre_to_kgs_per_hectare(
+        yield_bushels_per_acre, 
+        crop = crop
+      )
     )
-  )
 }
 
 wheat <- readRDS('./data/nass.wheat.rds')
@@ -173,9 +173,9 @@ ggplot(corn, aes(year, yield_kg_per_ha)) +
 
 # Wrap this plotting code into a function
 plot_yield_vs_year <- function(data) {
-ggplot(data, aes(year, yield_kg_per_ha)) +
-  geom_line(aes(group = state)) +
-  geom_smooth()
+  ggplot(data, aes(year, yield_kg_per_ha)) +
+    geom_line(aes(group = state)) +
+    geom_smooth()
 }
 
 wheat <- fortify_with_metric_units(wheat, crop = 'wheat') 
@@ -197,8 +197,8 @@ corn %>%
 
 # Wrap this code into a function
 fortify_with_census_region <- function(data) {
-data %>%
-  inner_join(usa_census_regions, by = "state")
+  data %>%
+    inner_join(usa_census_regions, by = "state")
 }
 
 # Try it on the wheat dataset
@@ -237,7 +237,7 @@ plot_yield_vs_year(corn) +
 # Wrap this code into a function
 plot_yield_vs_year_by_region <- function(data) {
   plot_yield_vs_year(data) +
-  facet_wrap(vars(census_region))
+    facet_wrap(vars(census_region))
 }
 
 
@@ -313,22 +313,52 @@ predict_this %>%
   # Add the prediction as a column of predict_this 
   mutate(pred_yield_kg_per_ha = pred_yield_kg_per_ha)
 
-
-
 # -------------------------------------------------------------------------
 
-
-
 # Wrap this prediction code into a function
-___
-predict_this <- data.frame(
-  year = 2050,
-  census_region = census_regions
-) 
-pred_yield_kg_per_ha <- predict(model, predict_this, type = "response")
-predict_this %>%
-  mutate(pred_yield_kg_per_ha = pred_yield_kg_per_ha)
-___
+predict_yields <- function(model, year) {
+  
+  predict_this <- data.frame(
+    year = year, 
+    census_region = census_regions
+  ) 
+  
+  pred_yield_kg_per_ha <- predict(model, predict_this, type = "response")
+  
+  predict_this %>%
+    mutate(pred_yield_kg_per_ha = pred_yield_kg_per_ha)
+}
 
 # Try it on the wheat dataset
-___
+predict_yields(wheat_model, 2050)
+
+
+barley <- readRDS('./data/nass.barley.rds')
+
+fortified_barley <- barley %>% 
+  # Fortify with metric units
+  fortify_with_metric_units('barley') %>%
+  # Fortify with census regions
+  fortify_with_census_region()
+
+# See the result
+glimpse(fortified_barley)
+
+
+fortified_barley %>% head()
+
+
+# Plot yield vs. year by region
+plot_yield_vs_year_by_region(fortified_barley)
+
+
+fortified_barley %>% 
+  # Run a GAM of yield vs. year by region
+  run_gam_yield_vs_year_by_region()
+  
+
+fortified_barley %>% 
+  # Run a GAM of yield vs. year by region
+  run_gam_yield_vs_year_by_region()  %>% 
+  # Make predictions of yields in 2050
+  predict_yields(2050)
