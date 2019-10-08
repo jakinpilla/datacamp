@@ -13,8 +13,6 @@ args(rank)
 # Rewrite this function call, following best practices
 rank(-gold_medals, na.last = "keep", ties.method = "min")
 
-
-
 coin_sides <- c("head", "tail")
 
 # Sample from coin_sides once
@@ -49,8 +47,6 @@ toss_coin(10)
 
 sample(c("bat", "cat", "rat"), 10, replace = TRUE, prob = c(0.2, 0.3, 0.5))
 
-
-
 coin_sides <- c("head", "tail")
 n_flips <- 10
 p_head <- 0.8
@@ -60,8 +56,6 @@ weights <- c(.8, .2)
 
 # Update so that heads are sampled with prob p_head
 sample(coin_sides, n_flips, replace = TRUE, weights)
-
-
 
 # Update the function so heads have probability p_head
 toss_coin <- function(n_flips) {
@@ -74,9 +68,6 @@ toss_coin <- function(n_flips) {
 
 # Generate 10 coin tosses
 toss_coin(10)
-
-
-
 
 # Update the function so heads have probability p_head
 toss_coin <- function(n_flips, p_head) {
@@ -122,9 +113,5 @@ model <- snake_river_visits %>%
 snake_river_explanatory %>%
   mutate(predicted_n_visits = predict(model, ., type = "response"))%>%
   arrange(desc(predicted_n_visits))
-
-
-
-
 
 
