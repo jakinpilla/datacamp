@@ -105,8 +105,6 @@ msleep %>%
   mutate(sleep = ifelse(sleep == 'sleep_total', 'total', 'rem')) %>% 
   na.omit() -> mamsleep
 
-mamsleep
-
 
 # Basic scatter plot
 p <- ggplot(mamsleep, aes(x = time, y = name, col = sleep)) +
