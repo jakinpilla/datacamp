@@ -191,21 +191,3 @@ np.median(np_city[:, 1])
 np.std(np_city[:, 0])
 corr = np.corrcoef(np_city[:, 0], np_city[:, 1])
 corr
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
