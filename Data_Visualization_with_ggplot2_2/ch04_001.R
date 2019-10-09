@@ -115,9 +115,47 @@ ggplot(mtcars, aes(x = factor(1), fill = am)) +
   theme_void() # theme
 
 
+# Pie chart 2 -------------------------------------------------------------
+
+# Parallel coordinates plot using GGally
+library(GGally)
+
+# All columns except am
+group_by_am <- 9
+my_names_am <- (1:11)[-group_by_am]
+
+str(mtcars)
+# Basic parallel plot - each variable plotted as a z-score transformation
+ggparcoord(mtcars, my_names_am, groupColumn = group_by_am, alpha = .8)
+
+ggplot(mtcars, aes(cyl, disp)) + geom_boxplot()
 
 
+# Heat Map-------------------------------------------------------------------------
+library(lattice)
+str(barley)
 
+
+# Create color palette
+myColors <- brewer.pal(9, "Reds")
+
+# Build the heat map from scratch
+ggplot(barley, aes(x = year, y = variety, fill = yield)) +
+  geom_tile() + # Geom layer
+  facet_wrap( ~ site, ncol = 1) + # Facet layer
+  scale_fill_gradientn(colors = myColors) # Adjust colors
+
+# Line plot; set the aes, geom and facet
+ggplot(barley, aes(x = year, y = yield, col = variety, group = variety)) +
+  geom_line() +
+  facet_wrap( ~ site, nrow = 1) +
+  scale_fill_gradientn(colors = myColors)
+
+
+# Create overlapping ribbon plot from scratch
+ggplot(barley, aes(x = year, y = yield, col = site, group = site, fill = site)) +
+  stat_summary(fun.y = mean, geom = 'line') +
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult=1), geom = 'ribbon', col =NA, alpha = .1)
 
 
 
