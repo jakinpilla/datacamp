@@ -113,4 +113,17 @@ head(sign_pred)
 head(sign_prob)
 
 
+# kNN benefits from normalized data...
+
+# Normalizing data...
+
+normalize <- function(x) {
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+signs$r1 %>% normalize() %>% summary()
+signs$r1 %>% summary()
+
+
+
 
