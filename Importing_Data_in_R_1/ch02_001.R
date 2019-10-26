@@ -4,10 +4,6 @@ library(readr)
 # Import potatoes.csv with read_csv(): potatoes
 potatoes <- read_csv('potatoes.csv')
 
-
-
-# readr is already loaded
-
 # Column names
 properties <- c("area", "temp", "size", "storage", "method",
                 "texture", "flavor", "moistness")
@@ -21,14 +17,14 @@ head(potatoes)
 
 # read_delim() ------------------------------------------------------------
 
+# more lower level than read_csv or read_tsv....
+
 # col_types = 'ccddiill'
 ## c : chr
 ## d : dbl
 ## i : int
 ## l : lgl
 ## _ : skip the column...
-
-# readr is already loaded
 
 # Column names
 properties <- c("area", "temp", "size", "storage", "method",
@@ -41,36 +37,32 @@ potatoes <- read_delim('potatoes.txt', delim = '\t',
 # Print out potatoes
 potatoes
 
-
-
-# readr is already loaded
-
 # Column names
 properties <- c("area", "temp", "size", "storage", "method",
                 "texture", "flavor", "moistness")
 
 # Import 5 observations from potatoes.txt: potatoes_fragment
-potatoes_fragment <- read_tsv("potatoes.txt", skip = 6, n_max = 5, col_names = properties)
+# with skip, n_max arguments...
+potatoes_fragment <- read_tsv("potatoes.txt", 
+                              skip = 6, # 위에서 6줄은 생략...
+                              n_max = 5, # 5줄의 데이터만 사용...
+                              col_names = properties)
 
-
-
-# readr is already loaded
 
 # Column names
 properties <- c("area", "temp", "size", "storage", "method",
                 "texture", "flavor", "moistness")
 
 # Import all data, but force all columns to be character: potatoes_char
-potatoes_char <- read_tsv("potatoes.txt", col_types = "cccccccc", col_names = properties)
+potatoes_char <- read_tsv("potatoes.txt", 
+                          col_types = "cccccccc",  # 모두 chr 형으로 불러옴...
+                          col_names = properties)
 
 # Print out structure of potatoes_char
 str(potatoes_char)
 
 
 # -------------------------------------------------------------------------
-
-
-# readr is already loaded
 
 # Import without col_types
 hotdogs <- read_tsv("hotdogs.txt", col_names = c("type", "calories", "sodium"))
@@ -90,7 +82,6 @@ hotdogs_factor <- read_tsv("hotdogs.txt",
 # Display the summary of hotdogs_factor
 summary(hotdogs_factor)
 
-
 # data.table...
 
 # load the data.table package
@@ -101,8 +92,6 @@ potatoes <- fread('potatoes.csv')
 
 # Print out potatoes
 potatoes
-
-
 
 # fread is already loaded
 

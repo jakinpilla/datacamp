@@ -25,7 +25,7 @@ str(pools)
 
 
 
-# -------------------------------------------------------------------------
+# read.delim(), read.table() -------------------------------------------------------------------------
 
 # Import hotdogs.txt: hotdogs
 hotdogs <- read.delim('./data/hotdogs.txt', header = F)
@@ -33,8 +33,7 @@ hotdogs <- read.delim('./data/hotdogs.txt', header = F)
 # Summarize hotdogs
 summary(hotdogs)
 
-
-# -------------------------------------------------------------------------
+# utils::read.table() -------------------------------------------------------------------------
 
 # Path to the hotdogs.txt file: path
 path <- file.path("data", "hotdogs.txt")
@@ -48,11 +47,16 @@ hotdogs <- read.table(path,
 head(hotdogs)
 
 
-
-# -------------------------------------------------------------------------
+# which.min(), which.max() -------------------------------------------------------------------------
 
 # Finish the read.delim() call
-hotdogs <- read.delim("./data/hotdogs.txt", header = F, col.names = c("type", "calories", "sodium"))
+hotdogs <- read.delim("./data/hotdogs.txt", 
+                      header = F, 
+                      col.names = c("type", "calories", "sodium"))
+
+
+hotdogs[which(hotdogs$calories == 175), ]
+hotdogs[which(hotdogs$type == "Poultry"), ]
 
 # Select the hot dog with the least calories: lily
 lily <- hotdogs[which.min(hotdogs$calories), ]
