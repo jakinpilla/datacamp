@@ -31,7 +31,6 @@ specific <- dbGetQuery(con, 'select message from comments where tweat_id = 77 an
 specific
 
 
-
 # Create data frame short
 short <- dbGetQuery(con, 
                     'select id, name from users where char_length(name) < 5')
@@ -47,7 +46,7 @@ dbGetQuery(con,
 
 
 # DBI internals...
-
+library(DBI)
 
 # Send query to the database
 res <- dbSendQuery(con, "SELECT * FROM comments WHERE user_id > 4")

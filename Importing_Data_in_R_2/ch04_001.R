@@ -5,7 +5,7 @@ library(jsonlite)
 wine_json <- '{"name":"Chateau Migraine", "year":1997, "alcohol_pct":12.4, "color":"red", "awarded":false}'
 
 # Convert wine_json into a list: wine
-wine <- fromJSON(wine_json)
+wine <- fromJSON(wine_json) # return list...
 
 # Print structure of wine
 str(wine)
@@ -22,10 +22,17 @@ quandl_data <- fromJSON(quandl_url)
 # Print structure of quandl_data
 str(quandl_data)
 
+column_nm <- quandl_data$dataset_data$column_names
+column_nm %>% length()
+quandl_data$dataset_data$data %>% dim
 
+quandl_data$dataset_data$data %>%
+  as_tibble() -> tbl_tmp
 
+colnames(tbl_tmp) <- column_nm
+tbl_tmp
 
-# The package jsonlite is already loaded
+# ?as_tibble()
 
 # Definition of the URLs
 url_sw4 <- "http://www.omdbapi.com/?apikey=72bc447a&i=tt0076759&r=json"
@@ -44,9 +51,32 @@ sw4$Year > sw3$Year
 
 
 # JSON object
+# name : string...
+# value : string, number, boolean, null, JSON object, JSON array...
+
+'[4, "a", 4, 6, 4, "b", 10, 6,  false, null]' %>% fromJSON()
+
+'{"id": 1, "name" : "Frank", "age": 23, "married": false, 
+  "parter": {"id": 4, "name": "Julie"}}' %>% fromJSON() -> r
+
+str(r)
+
+'[
+  {"id":1, "name": "Frank"},
+  {"id":4, "name": "Julie"},
+  {"id":12, "name": "Zach"}
+]' -> array_json
+
+array_json %>% fromJSON()
+
+iris %>% toJSON()
+
+
 # JSON array
 
-# jsonlite is already loaded
+c(1, 2, 3) %>% toJSON()
+c(1, 2, 3) %>% toJSON() %>% class()
+
 
 # Challenge 1
 json1 <- '[1, 2, 3, 4, 5, 6]'
@@ -68,22 +98,20 @@ json2 <- '[{"a": 1, "b": 2}, {"a": 5, "b": 6}]'
 fromJSON(json2)
 
 
-# jsonlite is already loaded
-
 # URL pointing to the .csv file
 url_csv <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/water.csv"
 
 # Import the .csv file located at url_csv
 water <- read.csv(url_csv, stringsAsFactors = F)
 
+water %>% as_tibble()
+
 # Convert the data file according to the requirements
 water_json <- toJSON(water)
 
 # Print out water_json
 water_json
-
-
-# jsonlite is already loaded
+str(water_json)
 
 # Convert mtcars to a pretty JSON: pretty_json
 pretty_json <- toJSON(mtcars, pretty = T)
@@ -215,9 +243,6 @@ demo <- read.spss('./data/international.sav', to.data.frame = T)
 boxplot(demo$gdp)
 
 
-
-# foreign is already loaded
-
 # Import international.sav as demo_1
 demo_1 <- read.spss('./data/international.sav', to.data.frame = T)
 
@@ -229,3 +254,4 @@ demo_2 <- read.spss('./data/international.sav', to.data.frame = T, use.value.lab
 
 # Print out the head of demo_2
 head(demo_2)
+

@@ -2,12 +2,13 @@
 
 # Load the readr package
 library(readr)
+library(tidyverse)
 
 # Import the csv file: pools
 url_csv <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/swimming_pools.csv"
 
 pools <- read_csv(url_csv)
-
+pools %>% head()
 
 # Import the txt file: potatoes
 url_delim <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/datasets/potatoes.txt"
@@ -47,6 +48,8 @@ url_xls <- "http://s3.amazonaws.com/assets.datacamp.com/production/course_1478/d
 # Import the .xls file with gdata: excel_gdata
 excel_gdata <- read.xls(url_xls)
 
+
+# download.file.... -------------------------------------------------------
 # Download file behind URL, name it local_latitude.xls
 download.file(url_xls, 'C:/Users/Daniel/Documents/Datacamp/Importing_Data_in_R_2/local_latitude.xls') 
 
@@ -85,9 +88,6 @@ raw_content <- content(resp, as='raw')
 # Print the head of raw_content
 head(raw_content)
 
-
-
-# httr is already loaded
 
 # Get the url
 url <- "http://www.omdbapi.com/?apikey=72bc447a&t=Annie+Hall&y=&plot=short&r=json"

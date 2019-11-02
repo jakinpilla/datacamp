@@ -43,6 +43,13 @@ library(tidyr)
 sales4 <- separate(sales3, event_date_time,
                    c("event_dt", "event_time"), sep = " ")
 
+sales4 %>% head()
+sales3 %>% 
+  select(event_date_time) %>% head()
+
+sales4 %>%
+  select( event_dt, event_time) %>% head()
+
 # head(sales4) %>% View()
 
 # Split sales_ord_create_dttm: sales5
