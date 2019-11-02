@@ -78,6 +78,8 @@ date_cols <- str_detect(names(sales5), "dt")
 # Load lubridate
 library(lubridate)
 
+lapply(sales5[, date_cols], ymd)
+
 # Coerce date columns into Date objects
 sales5[, date_cols] <- lapply(sales5[, date_cols], ymd)
 
@@ -102,3 +104,5 @@ sales6 <- unite(sales5, 'venue_city_state', venue_city, venue_state, sep = ', ')
 
 # View the head of sales6
 head(sales6)
+
+
