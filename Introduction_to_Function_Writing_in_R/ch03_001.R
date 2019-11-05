@@ -42,8 +42,6 @@ plt_dist_vs_speed <- cars %>%
 plt_dist_vs_speed
 
 
-
-
 R.version.string
 
 session <- function() {
@@ -65,6 +63,8 @@ vrsn
 
 os
 
+pkgs
+
 month_no <- setNames(1:12, month.abb)
 month_no
 
@@ -82,9 +82,14 @@ orange_trees <- Orange
 attributes(orange_trees)
 
 library(dplyr)
+
 orange_trees %>%
   group_by(Tree) %>%
-  attributes()
+  attributes() 
+
+orange_trees %>%
+  group_by(Tree) %>%
+  attributes() %>% names()
 
 
 library(broom)
@@ -92,7 +97,6 @@ library(broom)
 # glance() / model / DF
 # tidy() / coefficient / p-values
 # augment() / observation / residuals
-
 
 snake_river_visits <- readRDS('./data/snake_river_visits.rds')
 head(snake_river_visits)
@@ -111,6 +115,14 @@ model <- glm(
 # Look at the structure of model (it's a mess!)
 str(model)
 
+model %>% names()
+
+model %>% glance()
+
+model %>% tidy()
+
+model %>% augment()
+
 # Use broom tools to get a list of 3 data frames
 list(
   # Get model-level values
@@ -127,12 +139,11 @@ groom_model <- function(model) {
   list(
     model = glance(model),
     coefficients = tidy(model),
-    
-    
     observations = augment(model)
   )
 }
 
+# Multi Assignment...
 c(mdl, cff, obs) %<-% groom_model(model)
 mdl
 cff
@@ -154,10 +165,7 @@ plt_dist_vs_speed <- cars %>%
 # Examine the structure of the result
 str(plt_dist_vs_speed)
 
-
-
 # Environment...
-
 datacamp_lst <- list(
   name = 'DataCamp',
   founding_year = 2013,
@@ -166,6 +174,8 @@ datacamp_lst <- list(
 
 ls.str(datacamp_lst)
 
+
+?list2env
 
 datacamp_env <- list2env(datacamp_lst)
 ls.str(datacamp_env)
@@ -179,7 +189,6 @@ grandparent <- parent.env(parent)
 environmentName(grandparent)
 
 search()
-
 
 datacamp_lst <- list(
   name = 'DataCamp',

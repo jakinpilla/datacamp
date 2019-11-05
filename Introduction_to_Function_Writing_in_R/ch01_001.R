@@ -43,9 +43,13 @@ toss_coin <- function(n_flips) {
 
 # Generate 10 coin tosses
 toss_coin(10)
+library(tidyverse)
+toss_coin(100) %>% table()
 
 
 sample(c("bat", "cat", "rat"), 10, replace = TRUE, prob = c(0.2, 0.3, 0.5))
+sample(c("bat", "cat", "rat"), 100, replace = TRUE, prob = c(0.2, 0.3, 0.5)) %>% table()
+
 
 coin_sides <- c("head", "tail")
 n_flips <- 10
@@ -63,11 +67,12 @@ toss_coin <- function(n_flips) {
   # Define a vector of weights
   weights <- c(.8, .2)
   # Modify the sampling to be weighted
-  sample(coin_sides, n_flips, replace = TRUE)
+  sample(coin_sides, n_flips, replace = TRUE, weights)
 }
 
 # Generate 10 coin tosses
 toss_coin(10)
+toss_coin(100) %>% table()
 
 # Update the function so heads have probability p_head
 toss_coin <- function(n_flips, p_head) {
@@ -80,10 +85,22 @@ toss_coin <- function(n_flips, p_head) {
 
 # Generate 10 coin tosses
 toss_coin(10, .8)
+toss_coin(100, .8) %>% table()
 
 
 snake_river_visits <- readRDS('./data/snake_river_visits.rds')
 head(snake_river_visits)
+
+col_nm <- snake_river_visits %>% colnames()
+
+snake_river_visits[[col_nm[1]]] %>% table()
+hist(snake_river_visits[[col_nm[1]]])
+
+check_distinct_val <- function(df, col_nm) {
+  df %>%
+    distinct(col_nm) %>% return()
+}
+
 
 # Run a generalized linear regression 
 glm(

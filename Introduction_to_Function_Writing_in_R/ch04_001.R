@@ -24,7 +24,8 @@ c(1, 2, 3) %>% raise_to_power(2)
 
 # Write a function to convert sq. yards to sq. meters
 sq_yards_to_sq_meters <- function(sq_yards) {
-  sq_yards %>%
+
+    sq_yards %>%
     # Take the square root
     sqrt() %>%
     # Convert yards to meters
@@ -34,10 +35,10 @@ sq_yards_to_sq_meters <- function(sq_yards) {
 }
 
 
-
 # Write a function to convert acres to hectares
 acres_to_hectares <- function(acres) {
-  acres %>%
+
+    acres %>%
     # Convert acres to sq yards
     acres_to_sq_yards() %>%
     # Convert sq yards to sq meters
@@ -80,6 +81,7 @@ vec.tmp <- c(barley = 48, corn = 56, wheat = 60)
 vec.tmp['corn']
 vec.tmp %>% magrittr::extract('corn')
 
+?magrittr
 
 # Write a function to convert bushels to lbs
 bushels_to_lbs <- function(bushels, crop) {
@@ -127,7 +129,8 @@ corn %>%
       yield_bushels_per_acre,
       crop = "corn"
     )
-  ) 
+  ) %>% 
+  as_tibble()
 
 
 # Wrap this code into a function
@@ -184,6 +187,7 @@ wheat <- fortify_with_metric_units(wheat, crop = 'wheat')
 plot_yield_vs_year(wheat)
 
 
+library(readxl)
 read_excel('./data/usa_group_9.xlsx') %>%
   select(group_name, state) %>%
   rename(census_region = group_name) -> usa_census_regions
@@ -202,8 +206,7 @@ fortify_with_census_region <- function(data) {
 }
 
 # Try it on the wheat dataset
-fortify_with_census_reion(wheat)
-
+fortify_with_census_region(wheat)
 
 # -------------------------------------------------------------------------
 
@@ -220,6 +223,7 @@ wheat_with_metric <- fortify_with_metric_units(wheat, crop = 'wheat')
 corn_with_metric %>% head()
 wheat_with_metric %>% head()
 
+
 fortify_with_census_region(corn_with_metric) %>% head()
 fortify_with_census_region(wheat_with_metric) %>% head()
 
@@ -233,7 +237,6 @@ plot_yield_vs_year(corn) +
   facet_wrap(vars(census_region))
 
 
-
 # Wrap this code into a function
 plot_yield_vs_year_by_region <- function(data) {
   plot_yield_vs_year(data) +
@@ -241,7 +244,7 @@ plot_yield_vs_year_by_region <- function(data) {
 }
 
 
-# wheat <- fortify_with_census_region(wheat_with_metric)
+wheat <- fortify_with_census_region(wheat_with_metric)
 # Try it on the wheat dataset
 plot_yield_vs_year_by_region(wheat)
 
@@ -261,7 +264,8 @@ library(mgcv)
 
 
 corn_init <- readRDS('./data/nass.corn.rds')
-whea_init <- readRDS('./data/nass.wheat.rds')
+wheat_init <- readRDS('./data/nass.wheat.rds')
+
 
 corn_with_metric <- fortify_with_metric_units(corn_init , crop = 'corn') 
 wheat_with_metric <- fortify_with_metric_units(wheat_init, crop = 'wheat') 
@@ -275,14 +279,18 @@ wheat %>% head()
 
 # Run a generalized additive model of 
 # yield vs. smoothed year and census region
-gam(yield_kg_per_ha ~ s(year) + census_region, data = corn)
+mgcv::gam(yield_kg_per_ha ~ s(year) + census_region, data = corn)
 
-
+# ?gam
 
 # Wrap the model code into a function
+library(mgcv)
 run_gam_yield_vs_year_by_region <- function(data) {
-  gam(yield_kg_per_ha ~ s(year) + census_region, data = data)
+  gam(yield_kg_per_ha ~ s(year) + census_region, data = data) # s: defining smooths in GAM formulae...
 }
+
+
+?gam
 
 # Try it on the wheat dataset
 run_gam_yield_vs_year_by_region(wheat)
@@ -294,7 +302,6 @@ census_regions <- usa_census_regions %>%
 
 # -------------------------------------------------------------------------
 
-
 # Make predictions in 2050  
 predict_this <- data.frame(
   year = 2050,
@@ -303,8 +310,8 @@ predict_this <- data.frame(
 
 # -------------------------------------------------------------------------
 
-# corn_model <- run_gam_yield_vs_year_by_region(corn)
-# wheat_model <- run_gam_yield_vs_year_by_region(wheat)
+corn_model <- run_gam_yield_vs_year_by_region(corn)
+wheat_model <- run_gam_yield_vs_year_by_region(wheat)
 
 # Predict the yield
 pred_yield_kg_per_ha <- predict(corn_model, predict_this, type = "response")

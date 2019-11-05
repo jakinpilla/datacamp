@@ -10,9 +10,18 @@ toss_coin <- function(n_flips, p_head = .5) {
 cut_by_quantile <- function(x, n=5, na.rm, labels, interval_type) {
   probs <- seq(0, 1, length.out = n + 1)
   qtiles <- quantile(x, probs, na.rm = na.rm, names = FALSE)
-  right <- switch(interval_type, "(lo, hi]" = TRUE, "[lo, hi)" = FALSE)
+  right <- switch(interval_type, "(lo, hi]" = TRUE, "[lo, hi)" = FALSE) # switch....
+  cut(x, qtiles, labels = labels, right = right, include.lowest = TRUE) 
+}
+
+
+cut_by_quantile <- function(x, n = 5, na.rm, labels, interval_type) {
+  probs <- seq(0, 1, length.out = n + 1)
+  qtiles <- quantile(x, probs, na.rm = na.rm, names = FALSE)
+  right <- switch(interval_type, "(lo, hi]" = TRUE, "[lo, hi)"= FALSE)
   cut(x, qtiles, labels = labels, right = right, include.lowest = TRUE)
 }
+
 
 n_visits <- snake_river_visits$n_visits
 
@@ -70,12 +79,30 @@ cut_by_quantile <- function(x, n = 5, na.rm = FALSE, labels = NULL,
   cut(x, qtiles, labels = labels, right = right, include.lowest = TRUE)
 }
 
+?switch
+
+require(stats)
+centre <- function(x, type) {
+  switch(type,
+         mean = mean(x),
+         median = median(x),
+         trimmed = mean(x, trim = .1))
+}
+
+?rcauchy # Cauchy distribution...
+x <- rcauchy(10)
+
+
+centre(x, "mean")
+centre(x, "median")
+centre(x, "trimmed")
+
 # Remove the interval_type argument from the call
 cut_by_quantile(n_visits)
 
 
 std_and_poor500 <- readRDS('./data/std_and_poor500_with_pe_2019-06-21.rds')
-std_and_poor500 %>% head()
+std_and_poor500 %>% head() %>% View()
 
 get_reciprocal <- function(x) {
   1/x
@@ -89,12 +116,11 @@ calc_harmonic_mean <- function(x) {
 }
 
 
-std_and_poors500 %>% 
+std_and_poor500 %>% 
   # Group by sector
   group_by(sector) %>% 
   # Summarize, calculating harmonic mean of P/E ratio
   summarise(hmean_pe_ratio = calc_harmonic_mean(pe_ratio))
-
 
 
 # Add an na.rm arg with a default, and pass it to mean()
@@ -106,7 +132,7 @@ calc_harmonic_mean <- function(x, na.rm = F) {
 }
 
 
-std_and_poors500 %>% 
+std_and_poor500 %>% 
   # Group by sector
   group_by(sector) %>% 
   # Summarize, calculating harmonic mean of P/E ratio
@@ -120,7 +146,6 @@ calc_harmonic_mean <- function(x, ...) {
     mean(...) %>%
     get_reciprocal()
 }
-
 
 std_and_poor500 %>% 
   # Group by sector
@@ -147,7 +172,6 @@ library(assertthat)
 # install.packages('assertive')
 library(assertive)
 
-
 calc_geometric_mean <- function(x, na.rm = FALSE) {
   assert_is_numeric(x)
   if(any(is_non_positive(x), na.rm = TRUE)) {
@@ -166,6 +190,10 @@ use_first(c(1, 4, 9, 16))
 
 coerce_to(c(1, 4, 9, 16), 'character')
 
+coerce_to(c(1, 4, 9, 16), 'logical')
+
+coerce_to(c(1, 0, 9, 0), 'logical')
+
 calc_geometric_mean <- function(x, na.rm = FALSE) {
   assert_is_numeric(x)
   if(any(is_non_positive(x), na.rm = TRUE)) {
@@ -173,7 +201,6 @@ calc_geometric_mean <- function(x, na.rm = FALSE) {
   }
   
   na.rm <- coerce_to(use_first(na.rm), target_class = 'logical')
-  
   
   x %>%
     log() %>%
