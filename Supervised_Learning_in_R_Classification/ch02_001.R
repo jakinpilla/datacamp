@@ -1,17 +1,20 @@
 # Bayesian method....
 
-read_csv('./data/locations.csv') %>%
+locations <- read_csv('./data/locations.csv')
+
+locations %>%
   filter(hour == 9 & hourtype == 'morning') %>%
   select(daytype, location) -> where9am
-
 
 where9am
 
 # Compute P(A) 
 p_A <- nrow(subset(where9am, location == 'office')) / nrow(where9am)
+p_A
 
 # Compute P(B)
 p_B <- nrow(subset(where9am, daytype == 'weekday')) / nrow(where9am)
+p_B
 
 # Compute the observed P(A and B)
 p_AB <- nrow(subset(where9am, location == 'office' & daytype == 'weekday')) / nrow(where9am)
@@ -68,8 +71,8 @@ locmodel <- naive_bayes(location ~ daytype + hourtype,
                         data = locations)
 
 
-# weekday_afternoon <- locations[13, ]
-# weekday_evening <- locations[19, ]
+weekday_afternoon <- locations[13, ]
+weekday_evening <- locations[19, ]
 
 # Predict Brett's location on a weekday afternoon
 predict(locmodel, weekday_afternoon)

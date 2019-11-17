@@ -11,6 +11,8 @@ summary(mod)
 # Compute the mean of the residuals
 mean(residuals(mod))
 
+df.residual(mod)
+
 # Compute RMSE
 sqrt(sum(residuals(mod)^2) / df.residual(mod))
 

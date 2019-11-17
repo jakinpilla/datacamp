@@ -13,6 +13,8 @@ ggplot(ncbirths, aes(weeks, weight)) + geom_point()
 ggplot(data = ncbirths, 
        aes(x = cut(weeks, breaks = 5), y = weight)) + geom_boxplot()
 
+cut(ncbirths$weeks, breaks = 5) %>% unique()
+
 
 data('mammals')
 mammals %>% head()
@@ -25,6 +27,7 @@ data('mlbBat10')
 mlbBat10 %>% colnames()
 ggplot(mlbBat10, aes(OBP, SLG)) + geom_point()
 
+?bdims
 data('bdims')
 bdims %>% colnames()
 ggplot(bdims, aes(hgt, wgt, color = factor(sex))) + 

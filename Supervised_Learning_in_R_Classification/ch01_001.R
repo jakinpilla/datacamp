@@ -37,6 +37,9 @@ signs_total %>%
   filter(sample == 'train') %>%
   select(-sample, -id) -> signs
 
+signs
+signs[-1]
+
 signs_total %>%
   filter(sample == 'test') %>%
   select(-sample, -id, -sign_type) -> next_sign
@@ -74,7 +77,7 @@ signs_total %>%
 
 # Use kNN to identify the test road signs
 sign_types <- signs$sign_type
-signs_pred <- knn(train = signs[-1], test = test_signs[-1], cl = sign_types)
+signs_pred <- knn(train = signs[-1], test = test_signs[-1], cl = sign_types) # to predict test)signs' class(sign_type) with signs[-1] train data...
 
 # Create a confusion matrix of the predicted versus actual values
 signs_actual <- test_signs$sign_type
@@ -92,7 +95,7 @@ k_1 <- knn(train = signs[-1], test = signs_test[-1], cl = sign_types)
 mean(k_1 == signs_test$sign_type)
 
 # Modify the above to set k = 7
-k_7 <- knn(train = signs[-1], test = signs_test[-1], cl = sign_types, k=7)
+k_7 <- knn(train = signs[-1], test = signs_test[-1], cl = sign_types, k=7) # notice the argument  k = 7
 mean(k_7 == signs_test$sign_type)
 
 # Set k = 15 and compare to the above

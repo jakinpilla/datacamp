@@ -1,6 +1,6 @@
 # Binary predictions with regression...
 
-dononors <- read_csv('./data/donors.csv')
+donors <- read_csv('./data/donors.csv')
 donors %>% head %>% as.data.frame()
 
 # Examine the dataset to identify potential independent variables
@@ -48,7 +48,6 @@ auc(ROC)
 
 
 # Dummy variables, missing data and interactions...
-
 donors$wealth_rating
 
 # Convert the wealth rating to a factor
@@ -84,7 +83,6 @@ View(donors)
 colnames(donors)
 
 # Donors that haven't given both recently and frequently may be especially likely to give again
-
 rfm_model <- glm(donated ~ money + recency*frequency, data = donors, family = 'binomial')
 
 # Summarize the RFM model to see how the parameters were coded
@@ -105,7 +103,6 @@ auc(ROC)
 # Stepwise regression...
 
 # Though stepwise regression is frowned upon, it may still be useful for building predictive models in the absence of another starting place...
-
 
 # Specify a null model with no predictors
 null_model <- glm(donated ~ 1, data = donors, family = "binomial")

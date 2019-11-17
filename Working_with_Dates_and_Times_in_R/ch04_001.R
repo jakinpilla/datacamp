@@ -127,7 +127,7 @@ my_stamp(ymd('2003-02-27'))
 library(microbenchmark)
 library(fasttime)
 
-# dates <- akl_hourly$date %>% as.character()
+dates <- akl_hourly$date_utc%>% as.character()
 
 # Examine structure of dates
 str(dates)
@@ -143,11 +143,15 @@ microbenchmark(
 
 
 # Head of dates
+
+dates <- akl_hourly$date_utc%>% as.character()
 head(dates)
 
 # Parse dates with fast_strptime
 fast_strptime(dates, 
-              format = '%Y-%m-%d') %>% str()
+              format = '%Y-%m-%d %H:%M:%S') %>% str()
+
+
 
 # Comparse speed to ymd_hms() and fasttime
 microbenchmark(

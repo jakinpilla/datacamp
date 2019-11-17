@@ -4,6 +4,7 @@ library(openintro)
 possum %>% head()
 
 bdims %>% colnames()
+
 # Scatterplot with regression line
 ggplot(data = bdims, aes(x = hgt, y = wgt)) + 
   geom_point() + 

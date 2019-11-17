@@ -10,12 +10,10 @@ mario_kart %>%
   filter(totalPr < 100) %>% 
   ggplot(aes(1, totalPr, col = cond)) + geom_boxplot()
 
-
 boxplot(marioKart$totalPr)$stat
 
 marioKart %>%
   filter(totalPr >= 28.98, totalPr <= 100) -> mario_kart
-
 
 # Explore the data
 glimpse(mario_kart)

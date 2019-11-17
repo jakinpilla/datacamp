@@ -108,27 +108,3 @@ ggplot(logs, aes(x = datetime)) +
 
 library(lubridate)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

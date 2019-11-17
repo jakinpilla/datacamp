@@ -136,10 +136,7 @@ ymd('2018-01-31') %m+%  months(1)
 ymd('2018-01-31') %m-%  months(1)
 
 
-
-
 jan_31 <- ymd('2019-01-31')
-
 
 # A sequence of 1 to 12 periods of 1 month
 month_seq <- 1:12*months(1)

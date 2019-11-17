@@ -20,8 +20,6 @@ z <- "Sep, 12th 2010 14:00"  # 2010-09-12T14:00
 mdy_hm(z)
 
 
-
-
 # Specify an order string to parse x
 x <- "Monday June 1st 2010 at 4pm"
 parse_date_time(x, orders = "mdyh")
@@ -29,6 +27,7 @@ parse_date_time(x, orders = "mdyh")
 # Specify order to include both "mdy" and "dmy"
 two_orders <- c("October 7, 2001", "October 13, 2002", "April 13, 2003", 
                 "17 April 2005", "23 April 2017")
+
 parse_date_time(two_orders, orders = c('mdy', 'dmy'))
 
 # Specify order to include "dOmY", "OmY" and "Y"
@@ -36,10 +35,9 @@ short_dates <- c("11 December 1282", "May 1372", "1253")
 parse_date_time(short_dates, orders = c("dOmY", "OmY", "Y"))
 
 
-
 # Specify an order string to parse x
 x <- "Monday June 1st 2010 at 4pm"
-parse_date_time(x, orders = "ABdyIp") # A: Monday, B: June, d: 1st,  y: year, Ip: pm
+parse_date_time(x, orders = "ABdyIp") # A: Monday, B: June, d: 1st,  y: year, Ip: pm # not working....
 
 # Specify order to include both "mdy" and "dmy"
 two_orders <- c("October 7, 2001", "October 13, 2002", "April 13, 2003", 
@@ -55,8 +53,12 @@ parse_date_time(short_dates, orders = c("dOmY", "OmY", "Y"))
 weather <- read_csv('./data/akl_weather_daily.csv')
 weather %>% head()
 
+weather %>% dim()
+
 weather_1 <- read_csv('./data/akl_weather_hourly_2016.csv')
 weather_1 %>% head()
+
+weather_1 %>% dim()
 
 # make_date(year, month, day)...
 
@@ -97,8 +99,6 @@ ggplot(akl_hourly, aes(x = datetime, y = temperature)) +
 
 # -------------------------------------------------------------------------
 
-
-
 akl_daily <- read_csv('./data/akl_weather_daily.csv')
 head(akl_daily)
 akl_daily$date
@@ -119,7 +119,7 @@ akl_daily <- akl_daily %>%
     month = lubridate::month(date, label = TRUE))
 
 akl_daily %>% head() %>% as.data.frame()
-akl_daily$date %>% lubridate::month(label =T) # not working...why?
+akl_daily$date %>% lubridate::month(label =T) 
 
 # Plot max_temp by yday for all years
 ggplot(akl_daily, aes(x = yday, y = max_temp)) +
@@ -181,7 +181,7 @@ rainy_days <- akl_day %>%
   )
 
 # Summarise for each month, the number of days with rain
-rainy_days %>% 
+rainy_days%>% 
   summarise(
     days_rainy = sum(any_rain)
   )
@@ -232,18 +232,4 @@ akl_hourly %>%
   count(day_hour) %>%
   filter(n != 2) %>% 
   arrange(desc(n))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
