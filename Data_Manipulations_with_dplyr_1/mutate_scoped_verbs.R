@@ -48,30 +48,30 @@ av_survey_sample %>%
 
 # rename_if ---------------------------------------------------------------
 
-
 av_survey_sample %>%
   rename_if(is.numeric, ~paste0('num_', .x))
 
 
 # mutate_if ---------------------------------------------------------------
 
-
 av_survey_sample %>%
   mutate_if(~sum(is.na(.x)) > 0, 
                  ~if_else(is.na(.x), 'missing', as.character(.x)))
 
-
+# 'missing' 자체가 character이므로 as.character()가 더해졌다....
 
 # summarise_if ------------------------------------------------------------
-
 
 mode <- function(x) {
   names(sort(table(x)))[1]
 }
 
+
+x <- sample(1:100, 30, replace = T)
+x %>% mode()
+
 av_survey_sample %>%
   summarise_if(is.character, mode)
-
 
 
 # select helpers ----------------------------------------------------------
@@ -90,7 +90,6 @@ av_survey_sample %>% select(one_of(variables))
 
 # '_at' needs 'vars'...
 # select_at ---------------------------------------------------------------
-
 
 av_survey_sample %>%
   select_at(vars(start_date, end_date))
@@ -125,7 +124,6 @@ av_survey_sample %>%
 
 av_survey_sample %>%
   rename_all(~gsub("_", ".", .x))
-
 
 
 # mutate_all --------------------------------------------------------------

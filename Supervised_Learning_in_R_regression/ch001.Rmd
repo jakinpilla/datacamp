@@ -1,0 +1,153 @@
+---
+title: "ch001"
+author: "Daniel_Kim"
+date: '2019 12 15 '
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gdata)
+library(broom)
+# install.packages('sigr')
+library(sigr)
+```
+
+
+```{r, message=FALSE}
+unemployee <- read_csv('./data/s_data.csv')
+unemployee
+```
+
+```{r}
+summary(unemployee)
+```
+
+Set formula...
+
+```{r}
+fmla <- Y ~ X
+```
+
+```{r}
+fmla
+```
+
+```{r}
+unemployee_model <- lm(fmla, data = unemployee)
+```
+
+
+Call summary() on unemployment_model to get more details
+
+```{r}
+summary(unemployee_model)
+```
+
+
+Call glance() on unemployment_model to see the details in a tidier form
+
+```{r}
+glance(unemployee_model)
+```
+
+
+Call wrapFTest() on unemployment_model to see the most relevant details
+
+```{r}
+wrapFTest(unemployee_model)
+```
+
+
+unemployment is in your workspace
+
+```{r}
+unemployment <- unemployee %>%
+  rename(male_unemployment = X, female_unemployment = Y)
+summary(unemployment)
+```
+
+```{r}
+unemployee_model <- lm(female_unemployment ~ male_unemployment, data = unemployment)
+```
+
+
+newrates is in your workspace
+```{r}
+newrates <- data.frame(male_unemployment = 5)
+newrates
+```
+
+
+Predict female unemployment in the unemployment data set
+
+```{r}
+unemployment$prediction <- predict(unemployee_model, unemployment)
+```
+
+Make a plot to compare predictions to actual (prediction on x axis). 
+
+```{r}
+ggplot(unemployment, aes(x = prediction, y = female_unemployment)) + 
+  geom_point() +
+  geom_abline(color = "blue")
+```
+
+
+Predict female unemployment rate when male unemployment is 5%
+
+```{r}
+pred <- predict(unemployee_model, newrates)
+```
+
+Print it
+
+```{r}
+pred
+```
+
+### Multivariate linear regression (Part 1)
+
+```{r}
+bloodpressure <- readRDS('./data/bloodpressure.rds')
+```
+
+```{r}
+summary(bloodpressure)
+```
+
+```{r}
+fmla <- blood_pressure ~ age + weight
+```
+
+```{r}
+bloodpressure_model <- lm(fmla, data = bloodpressure)
+```
+
+```{r}
+bloodpressure
+```
+
+```{r}
+summary(bloodpressure_model)
+```
+
+Predict blood pressure using bloodpressure_model
+
+```{r}
+bloodpressure$prediction <- predict(bloodpressure_model, data = bloodpressure)
+```
+
+Plot the result...
+
+```{r}
+ggplot(bloodpressure, aes(prediction, blood_pressure)) +
+  geom_point() +
+  geom_abline(color = 'blue')
+```
+
+### Collinearity
+Collinearity -- when variables are partially correlated.
+Coefficients might change sign
+
