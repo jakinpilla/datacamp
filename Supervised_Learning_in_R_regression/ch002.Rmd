@@ -1,0 +1,102 @@
+---
+title: "ch021"
+author: "Daniel_Kim"
+date: '2019 12 15 '
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gdata)
+library(broom)
+# install.packages('sigr')
+library(sigr)
+```
+
+```{r}
+load('unemp.RData')
+```
+
+```{r}
+summary(unemployment)
+summary(unemployee_model)
+```
+
+Make predictions from the model
+
+```{r}
+unemployment$predictions <- predict(unemployee_model, data = unemployment)
+```
+
+Fill in the blanks to plot predictions (on x-axis) versus the female_unemployment rates
+
+```{r}
+ggplot(unemployment, aes(x = predictions, y = female_unemployment)) + 
+  geom_point() + 
+  geom_abline()
+```
+
+Calculate residuals
+
+```{r}
+unemployment$residuals <- unemployment$female_unemployment - unemployment$predictions
+```
+
+
+To plot predictions (on x-axis) versus the residuals with `geom_pointrange()` 
+
+```{r}
+ggplot(unemployment, aes(x = predictions, y = residuals)) + 
+  geom_pointrange(aes(ymin = 0, ymax = residuals)) + 
+  geom_hline(yintercept = 0, linetype = 3) + 
+  ggtitle("residuals vs. linear model prediction")
+```
+
+```{r}
+summary(unemployment)
+```
+
+unemployment_model is in the workspace
+
+```{r}
+summary(unemployee_model)
+```
+
+Load the package WVPlots
+
+```{r, message=FALSE}
+# install.packages('WVPlots')
+library(WVPlots)
+```
+
+
+Plot the Gain Curve
+
+```{r}
+GainCurvePlot(unemployment, 'predictions', 'female_unemployment', "Unemployment model")
+```
+
+When the predictions sort in exactly the same order, the relative Gini coefficient is 1. When the model sorts poorly, the relative Gini coefficient is close to zero, or even negative.
+
+### RMSE
+
+For convenience put the residuals in the variable res
+
+```{r}
+res <- unemployment$residuals
+```
+
+Calculate RMSE, assign it to the variable rmse and print it
+
+```{r}
+(rmse <- sqrt(mean(res^2)))
+```
+
+Calculate the standard deviation of female_unemployment and print it
+
+```{r}
+(sd_unemployment <- sd(unemployment$female_unemployment))
+```
+
+

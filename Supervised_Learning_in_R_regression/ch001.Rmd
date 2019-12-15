@@ -83,13 +83,13 @@ newrates
 Predict female unemployment in the unemployment data set
 
 ```{r}
-unemployment$prediction <- predict(unemployee_model, unemployment)
+unemployment$predictions <- predict(unemployee_model, unemployment)
 ```
 
 Make a plot to compare predictions to actual (prediction on x axis). 
 
 ```{r}
-ggplot(unemployment, aes(x = prediction, y = female_unemployment)) + 
+ggplot(unemployment, aes(x = predictions, y = female_unemployment)) + 
   geom_point() +
   geom_abline(color = "blue")
 ```
@@ -150,4 +150,8 @@ ggplot(bloodpressure, aes(prediction, blood_pressure)) +
 ### Collinearity
 Collinearity -- when variables are partially correlated.
 Coefficients might change sign
+
+```{r}
+save(unemployee_model, unemployment, file = 'unemp.RData')
+```
 
