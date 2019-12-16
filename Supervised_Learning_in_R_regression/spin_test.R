@@ -48,3 +48,5 @@ Sys.sleep(60)
 # */
 
 # /* there is no inline comment; you have to write block comments */
+
+load('./data/Income.RData')
