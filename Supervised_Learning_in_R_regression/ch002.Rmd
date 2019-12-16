@@ -1,5 +1,5 @@
 ---
-title: "ch021"
+title: "ch002"
 author: "Daniel_Kim"
 date: '2019 12 15 '
 output: rmarkdown::github_document
@@ -99,4 +99,301 @@ Calculate the standard deviation of female_unemployment and print it
 (sd_unemployment <- sd(unemployment$female_unemployment))
 ```
 
+### R-Squared
+
+variance explained...
+
+r_squared = 1 - SSR/SST
+
+SSR = sum{(y - y_hat)^2}
+
+SST = sum{(y - y_mean)^2}
+
+
+Calculate mean female_unemployment: fe_mean. Print it
+
+```{r}
+(fe_mean <- mean(unemployment$female_unemployment))
+```
+
+
+Calculate total sum of squares: tss. Print it
+
+```{r}
+(tss <- sum((unemployment$female_unemployment - fe_mean)^2))
+```
+
+Calculate residual sum of squares: rss. Print it
+
+```{r}
+(rss <- sum((unemployment$female_unemployment - unemployment$predictions)^2))
+```
+
+
+Calculate R-squared: rsq. Print it. Is it a good fit?
+
+```{r}
+(rsq <- 1 - rss/tss)
+```
+
+```{r}
+glance(unemployee_model)
+```
+
+
+Get R-squared from glance. Print it
+
+```{r}
+(rsq_glance <- glance(unemployee_model)$r.squared)
+```
+
+Get the correlation between the prediction and true outcome: rho and print it
+
+```{r}
+(rho <- cor(unemployment$predictions, unemployment$female_unemployment))
+```
+
+Square rho: rho2 and print it
+
+```{r}
+(rho2 <- rho^2)
+```
+
+
+Get R-squared from glance and print it
+
+```{r}
+(rsq_glance <- glance(unemployee_model)$r.squared)
+```
+
+Loading data...
+
+```{r}
+data('mpg')
+```
+
+```{r}
+summary(mpg)
+```
+
+```{r}
+dim(mpg)
+```
+
+
+Use nrow to get the number of rows in mpg (N) and print it
+
+```{r}
+(N <- nrow(mpg))
+```
+
+
+Calculate how many rows 75% of N should be and print it
+Hint: use round() to get an integer
+
+```{r}
+(target <- round(N*0.75))
+```
+
+Create the vector of N uniform random variables: gp
+
+```{r}
+gp <- runif(N)
+```
+
+```{r}
+gp %>%
+  as_tibble() %>%
+  rowid_to_column() %>%
+  ggplot(aes(rowid, value)) + geom_point() + geom_hline(yintercept = .75, col = 'red')
+
+# ?geom_hline
+```
+
+```{r}
+sum(gp < .75)
+```
+
+```{r}
+sum(gp >= .75)
+```
+
+
+Use gp to create the training set: mpg_train (75% of data) and mpg_test (25% of data)
+
+```{r}
+mpg_train <- mpg[gp < .75, ]
+mpg_test <- mpg[gp >= .75, ]
+```
+
+
+Use nrow() to examine mpg_train and mpg_test
+
+```{r}
+nrow(mpg_train)
+nrow(mpg_test)
+```
+
+mpg_train is in the workspace
+
+```{r}
+summary(mpg_train)
+```
+
+
+Create a formula to express cty as a function of hwy: fmla and print it.
+
+```{r}
+(fmla <- cty ~ hwy)
+```
+
+Now use lm() to build a model mpg_model from mpg_train that predicts cty from hwy 
+
+```{r}
+mpg_model <- lm(fmla, data = mpg_train)
+```
+
+Use summary() to examine the model
+
+```{r}
+summary(mpg_model)
+```
+
+
+predict cty from hwy for the training set
+
+```{r}
+mpg_train$pred <- predict(mpg_model, newdata = mpg_train)
+```
+
+
+predict cty from hwy for the test set
+
+```{r}
+mpg_test$pred <- predict(mpg_model, newdata = mpg_test)
+```
+
+define functions...
+
+```{r}
+r_squared  <- function(predcol, ycol) {
+  tss = sum( (ycol - mean(ycol))^2 )
+  rss = sum( (predcol - ycol)^2 )
+  1 - rss / tss
+}
+
+rmse <- function(predcol, ycol) {
+  res = predcol - ycol
+  sqrt(mean(res)^2)
+}
+```
+
+
+
+Evaluate the rmse on both training and test data and print them
+
+```{r}
+(rmse_train <- rmse(mpg_train$cty, mpg_train$pred))
+(rmse_test <- rmse(mpg_test$cty, mpg_test$pred))
+```
+
+
+Evaluate the r-squared on both training and test data.and print them
+
+```{r}
+(rsq_train <- r_squared(mpg_train$pred, mpg_train$cty))
+(rsq_test <- r_squared(mpg_test$pred, mpg_test$cty))
+```
+
+
+Plot the predictions (on the x-axis) against the outcome (cty) on the test data
+
+```{r}
+ggplot(mpg_test, aes(x = pred, y = cty)) + 
+  geom_point() + 
+  geom_abline()
+```
+
+Load the package vtreat
+
+```{r, message = FALSE }
+# install.packages('vtreat')
+library(vtreat)
+```
+
+mpg is in the workspace
+
+```{r}
+summary(mpg)
+```
+
+Get the number of rows in mpg
+
+```{r}
+nRows <- nrow(mpg)
+```
+
+Implement the 3-fold cross-fold plan with vtreat
+
+```{r}
+splitPlan <- kWayCrossValidation(nRows, 3, NULL, NULL)
+```
+
+Examine the split plan
+
+```{r}
+splitPlan
+```
+
+splitPlan의 구조를 알아봅니다.
+
+```{r}
+str(splitPlan)
+```
+
+```{r}
+nrow(mpg)
+```
+
+3개의 리스트가 있고 각각의 리스트에는 train 인덱스와 app 인덱스가 있습니다.
+또한, 그 train 인덱스는 156개이고 test 인덱스는 78개입니다.
+test 78개각 3개의 리스트에 각각 담겨져 있는데 이들을 모두 합치면 전체 데이터의 수와 같게 됩니다.
+
+```{r}
+78*3 == nrow(mpg)
+```
+
+Run the 3-fold cross validation plan from splitPlan
+
+```{r}
+k <- 3 # Number of folds
+mpg$pred.cv <- 0 
+for(i in 1:k) {
+  split <- splitPlan[[i]]
+  model <- lm(cty ~ hwy, data = mpg[split$train, ])
+  mpg$pred.cv[split$app] <- predict(model, newdata = mpg[split$app, ])
+}
+```
+
+```{r}
+mpg %>% head
+```
+
+Predict from a full model
+
+```{r}
+mpg$pred <- predict(lm(cty ~ hwy, data = mpg))
+```
+
+Get the rmse of the full model's predictions
+
+```{r}
+rmse(mpg$pred, mpg$cty)
+```
+
+Get the rmse of the cross-validation predictions
+
+```{r}
+rmse(mpg$pred.cv, mpg$cty)
+```
 
