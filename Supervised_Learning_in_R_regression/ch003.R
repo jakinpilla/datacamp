@@ -156,21 +156,23 @@ bike_model <- glm(fmla, data = bikesJuly, family = quasipoisson)
 #' 
 #' Recall that you must specify type = "response" with predict() when predicting counts from a glm poisson or quasipoisson model.
 
-# Make predictions on August data
+#' Make predictions on August data
 bikesAugust$pred  <- predict(bike_model, newdata = bikesAugust, type = 'response')
 
-# Calculate the RMSE
+#' Calculate the RMSE
 bikesAugust %>% 
   mutate(residual = pred - cnt) %>%
   summarize(rmse  = sqrt(mean(residual^2)))
 
-# Plot predictions vs cnt (pred on x-axis)
+#' Plot predictions vs cnt (pred on x-axis)
 ggplot(bikesAugust, aes(x = pred, y = cnt)) +
   geom_point() + 
   geom_abline(color = "darkblue")
 
 
-# Plot predictions and cnt by date/time
+#' Plot predictions and cnt by date/time
+#' 
+#+ fig.width = 10, fig.hight = 8
 bikesAugust %>% 
   # set start to 0, convert unit to days
   mutate(instant = (instant - min(instant))/24) %>%  
@@ -186,7 +188,7 @@ bikesAugust %>%
   ggtitle("Predicted August bike rentals, Quasipoisson model")
 
 
-### GAM to learn non-linear trandform
+#' ### GAM to learn non-linear trandform
 
 #' Generalized Additive Models
 #' 
