@@ -95,4 +95,7 @@ ggplot(first_two_weeks, aes(x = instant, y = value, color = valuetype, linetype 
   scale_color_brewer(palette = "Dark2") + 
   ggtitle("Predicted August bike rentals, Random Forest plot")
 
+#' The random forest model captured the day-to-day variations in peak demand better than the quasipoisson model, but it still underestmates peak demand, and also overestimates minimum demand. So there is still room for improvement.
+#' 
+
 
