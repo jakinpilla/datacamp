@@ -1,3 +1,12 @@
+#' ---
+#' title: "ch003"
+#' author: "jakinpilla"
+#' date : "`r format(Sys.time(), '%Y-%m-%d')`"
+#' output: 
+#'    github_document : 
+#'        toc : true
+#' ---
+
 #+ message = FALSE, warning = FALSE
 library(tidyverse)
 library(broom)
@@ -11,9 +20,29 @@ library(rpart.plot)
 library(Metrics)
 library(ipred)
 library(caret)
+library(randomForest)
 
 
-# Bagging is a randomized model, so let's set a seed (123) for reproducibility
+read_csv('./data/credit.csv') -> credit
+
+#' Total number of rows in the credit data frame
+n <- nrow(credit)
+
+#' Number of rows for the training set (80% of the dataset)
+n_train <- round(.8 * n) 
+
+#' Create a vector of indices which is an 80% random sample
+set.seed(123)
+train_indices <- sample(1:n, n_train)
+
+#' Subset the credit data frame to training indices only
+credit_train <- credit[train_indices, ]  
+
+#'' Exclude the training indices to create the test set
+credit_test <- credit[-train_indices, ]  
+
+
+#' Bagging is a randomized model, so let's set a seed (123) for reproducibility
 set.seed(25)
 credit_train %>% str()
 
@@ -21,76 +50,76 @@ credit_train %>%
   mutate_if(is.character, as.factor) -> credit_train
 
 
-# Train a bagged model
+#' Train a bagged model
 credit_model <- bagging(formula = default ~ ., 
                         data = credit_train,
                         coob = TRUE)
 
-# Print the model
+#' Print the model
 print(credit_model)
 
-# Generate predicted classes using the model object
+#' Generate predicted classes using the model object
 class_prediction <- predict(object = credit_model,    
                             newdata = credit_test,  
-                            type = "class")  # return classification labels
+                            type = "class")  #' return classification labels
 
-# Print the predicted classes
+#' Print the predicted classes
 print(class_prediction)
 
-# Calculate the confusion matrix for the test set
+#' Calculate the confusion matrix for the test set
 confusionMatrix(data = class_prediction,       
                 reference = as.factor(credit_test$default))
 
 
-# Generate predictions on the test set
+#' Generate predictions on the test set
 pred <- predict(object = credit_model,
                 newdata = credit_test,
                 type = "prob")
 
-# `pred` is a matrix
+#' `pred` is a matrix
 class(pred)
 
-# Look at the pred format
+#' Look at the pred format
 head(pred)
 
-# Compute the AUC (`actual` must be a binary (or 1/0 numeric) vector)
+#' Compute the AUC (`actual` must be a binary (or 1/0 numeric) vector)
 auc(actual = ifelse(credit_test$default == "yes", 1, 0), 
     predicted = pred[,"yes"]) -> credit_ipred_model_test_auc                 
 
 credit_ipred_model_test_auc
 
 
-# Specify the training configuration
-ctrl <- trainControl(method = "cv",     # Cross-validation
-                     number = 5,      # 5 folds
-                     classProbs = TRUE,                  # For AUC
-                     summaryFunction = twoClassSummary)  # For AUC
+#' Specify the training configuration
+ctrl <- trainControl(method = "cv",     #' Cross-validation
+                     number = 5,      #' 5 folds
+                     classProbs = TRUE,                  #' For AUC
+                     summaryFunction = twoClassSummary)  #' For AUC
 
-# Cross validate the credit model using "treebag" method; 
-# Track AUC (Area under the ROC curve)
-set.seed(1)  # for reproducibility
+#' Cross validate the credit model using "treebag" method; 
+#' Track AUC (Area under the ROC curve)
+set.seed(1)  #' for reproducibility
 credit_caret_model <- train(default ~ .,
                             data = credit_train, 
                             method = "treebag",
                             metric = "ROC",
                             trControl = ctrl)
 
-# Look at the model object
+#' Look at the model object
 print(credit_caret_model)
 
-# Inspect the contents of the model list 
+#' Inspect the contents of the model list 
 names(credit_caret_model)
 
-# Print the CV AUC
+#' Print the CV AUC
 credit_caret_model$results[,"ROC"]
 
 
-# Generate predictions on the test set
+#' Generate predictions on the test set
 pred <- predict(object = credit_caret_model, 
                 newdata = credit_test,
                 type = "prob")
 
-# Compute the AUC (`actual` must be a binary (or 1/0 numeric) vector)
+#' Compute the AUC (`actual` must be a binary (or 1/0 numeric) vector)
 auc(actual = ifelse(credit_test$default == "yes", 1, 0), 
     predicted = pred[,"yes"]) -> credit_caret_model_test_auc
 
