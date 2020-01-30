@@ -1,0 +1,41 @@
+---
+title: "sql_practice"
+date: '2020 1 28 '
+output: rmarkdown::github_document
+---
+
+```{r, message=FALSE, echo=FALSE}
+library(RMySQL)
+con <- dbConnect(RMySQL::MySQL(), 
+                 dbname = "my_db", 
+                 port = 3306,
+                 user = "root",
+                 password = "chr0n3!7!")
+
+```
+
+먼저 부서 테이블을 생성합니다. 명령어: create table...
+
+```{sql, connection = con, eval = FALSE}
+create table departments
+(dep_num int(10) primary key,
+dep_name varchar(15) not null);
+```
+
+생성된 테이블에 데이터들을 insert 합니다. 명령어:insert into...values...
+
+```{sql, connection = con, eval=FALSE}
+insert into departments (dep_num, dep_name)
+values(10, '교수부'),
+(20, '행정부'),
+(30, '전발부');
+```
+
+```{sql, connection = con, options(encoding = UTF-8)}
+select * from departments;
+```
+
+```{sql, connection = con}
+desc departments;
+```
+
